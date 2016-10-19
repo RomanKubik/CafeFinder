@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">CafeFinder</string>
+
+    <!--LoginActivity-->
+    <string name="email_et_hint">Email</string>
+    <string name="password_et_hint">Password</string>
+    <string name="login_btn">Login</string>
+    <string name="create_account_tv"><u>No account yet? Create one</u></string>
+
+
 </resources>
