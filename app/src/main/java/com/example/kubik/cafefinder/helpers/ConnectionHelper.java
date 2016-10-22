@@ -10,14 +10,19 @@ import android.net.NetworkInfo;
  * If it can`t connect in this period return false.
  */
 
-public class ConnectionHelper {
+public final class ConnectionHelper {
+
+    private static final int DEFAULT_RETRY_COUNT = 4;
+    private static final int DEFAULT_RETRY_PENDING = 500;
+
+    private ConnectionHelper(){}
 
     public static boolean isConnected(Context context) throws InterruptedException {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < DEFAULT_RETRY_COUNT; i++) {
             if (isNetworkConnected(context)) {
                 return true;
             } else {
-                Thread.sleep(500);
+                Thread.sleep(DEFAULT_RETRY_PENDING);
             }
         }
         return false;

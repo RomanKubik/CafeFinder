@@ -2,14 +2,13 @@ package com.example.kubik.cafefinder.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
 import com.example.kubik.cafefinder.R;
 
 /**
  * Activity for main window of app.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseCafeActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

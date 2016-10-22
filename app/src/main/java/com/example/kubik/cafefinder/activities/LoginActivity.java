@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kubik.cafefinder.R;
-import com.example.kubik.cafefinder.helpers.ConnectionHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -30,9 +28,9 @@ import butterknife.OnClick;
  * Class for working with login_activity
  */
 
-public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class LoginActivity extends BaseCafeActivity implements GoogleApiClient.OnConnectionFailedListener {
 
-    public static final String ACCOUNT = "Account";
+    public static final String EXTRA_ACCOUNT = "EXTRA_ACCOUNT";
 
     private static final int RC_SIGN_IN = 9001;
     private static final String TAG = "LoginActivity";
@@ -60,7 +58,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
-        ButterKnife.bind(this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -69,19 +66,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        try {
-            if (!ConnectionHelper.isConnected(this)) {
-                Toast.makeText(this, R.string.not_connected_msg, Toast.LENGTH_LONG).show();
-            }
-        } catch (InterruptedException e) {
-            Log.e(TAG, e.getMessage());
-        }
     }
 
     @OnClick(R.id.btn_login)
@@ -125,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void startMainActivity(GoogleSignInAccount acct) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(ACCOUNT, acct);
+        intent.putExtra(EXTRA_ACCOUNT, acct);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
