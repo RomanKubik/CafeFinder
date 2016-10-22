@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "96781850295",
+    "project_id": "firebase-cafefinder"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:96781850295:android:bfcdad0409140c92",
+        "android_client_info": {
+          "package_name": "com.example.kubik.cafefinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "96781850295-fe4hfkdon4iffvn9gj0cs920sgkjetae.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kubik.cafefinder",
+            "certificate_hash": "0024AF7633277868FFDF687FD366D51DF43BA0AA"
+          }
+        },
+        {
+          "client_id": "96781850295-jeufnnkfm5vbmn93i61ge0pgkm7cim72.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBpA1N4iW490kd5Oxr334q5NltLpJqGkg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
