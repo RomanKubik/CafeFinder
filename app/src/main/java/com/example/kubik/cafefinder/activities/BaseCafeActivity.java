@@ -12,7 +12,7 @@ import com.example.kubik.cafefinder.helpers.ConnectionHelper;
 import butterknife.ButterKnife;
 
 /**
- * Created by Kubik on 10/22/16.
+ * Base class for all activities. This class bind views initialized in child activity.
  */
 
 public class BaseCafeActivity extends AppCompatActivity {

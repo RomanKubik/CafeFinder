@@ -34,9 +34,6 @@
     <dimen name="button_height_micro">25dp</dimen>
 
 
-    <dimen name="backdrop_size">130dp</dimen>
-    <dimen name="login_field">300dp</dimen>
-    <dimen name="poster_height">150dp</dimen>
-    <dimen name="poster_width">100dp</dimen>
-
+    <!-- sizes of images -->
+    <dimen name="cafe_card_img">175dp</dimen>
 </resources>

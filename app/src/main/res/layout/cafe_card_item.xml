@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/img_cafe_card"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cafe_card_img"
+                android:background="@color/colorAccent"/>
+            <TextView
+                android:id="@+id/tv_cafe_card_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/tv_cafe_card_address"
+                android:textSize="@dimen/text_size_large_plus"
+                android:textColor="@color/white"
+                android:background="#40000000"
+                android:text="Best cafe"/>
+            <TextView
+                android:id="@+id/tv_cafe_card_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tv_cafe_card_name"
+                android:layout_alignEnd="@id/tv_cafe_card_name"
+                android:layout_alignRight="@id/tv_cafe_card_name"
+                android:textSize="@dimen/text_size_large_plus"
+                android:textColor="@color/white"
+                android:text="4,5"/>
+            <TextView
+                android:id="@+id/tv_cafe_card_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/img_cafe_card"
+                android:textSize="@dimen/text_size_large"
+                android:textColor="@color/black"
+                android:text="Pekarska st. 22, Lviv"/>
+            <TextView
+                android:id="@+id/tv_cafe_card_destination"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/tv_cafe_card_address"
+                android:layout_alignEnd="@id/tv_cafe_card_address"
+                android:layout_alignRight="@id/tv_cafe_card_address"
+                android:textSize="@dimen/text_size_medium"
+                android:textColor="@color/black"
+                android:text="3 km"/>
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+</LinearLayout>
