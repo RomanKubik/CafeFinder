@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.example.kubik.cafefinder.R;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.PlaceReport;
 
 /**
  * Activity for main window of app.
@@ -17,7 +18,6 @@ public class MainActivity extends BaseCafeActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-
 
     }
 
