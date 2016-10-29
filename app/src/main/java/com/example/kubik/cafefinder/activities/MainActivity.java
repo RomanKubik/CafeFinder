@@ -133,8 +133,8 @@ public class MainActivity extends BaseCafeActivity
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<CafeList> call = apiService.getNearbyPlaces(49.78,
-                24.06, 500, "cafe", ApiUrlBuilder.getApiKey());
+        Call<CafeList> call = apiService.getNearbyPlaces(mLastLocation.getLatitude(),
+                mLastLocation.getLongitude(), 500, "cafe", ApiUrlBuilder.getApiKey());
 
         call.enqueue(new Callback<CafeList>() {
             @Override
