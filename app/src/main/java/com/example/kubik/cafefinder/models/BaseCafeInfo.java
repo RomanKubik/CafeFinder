@@ -28,7 +28,7 @@ public class BaseCafeInfo {
     private OpeningHours openingHours;
     @SerializedName("photos")
     @Expose
-    private List<Photo> photos = new ArrayList<Photo>();
+    private List<Photo> photos = new ArrayList<>();
     @SerializedName("place_id")
     @Expose
     private String placeId;
@@ -43,7 +43,7 @@ public class BaseCafeInfo {
     private String scope;
     @SerializedName("types")
     @Expose
-    private List<String> types = new ArrayList<String>();
+    private List<String> types = new ArrayList<>();
     @SerializedName("vicinity")
     @Expose
     private String vicinity;

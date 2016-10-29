@@ -27,14 +27,15 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
     private List<BaseCafeInfo> mCafeList;
     private Context mContext;
 
-    public MainCafeListAdapter(List<BaseCafeInfo> cafeList) {
+    public MainCafeListAdapter(List<BaseCafeInfo> cafeList, Context context) {
         this.mCafeList = cafeList;
+        this.mContext = context;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        mContext = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(mContext);
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(R.layout.cafe_card_item, parent, false);
 
@@ -44,11 +45,13 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         BaseCafeInfo cafe = mCafeList.get(position);
-        Picasso.with(mContext).load(ApiUrlBuilder
-                .getPhotoUrl(cafe.getPhotos().get(0).getPhotoReference()))
-                .fit().centerCrop()
-                .into(holder.imgCafeCard);
-
+        if (cafe.getPhotos().size() != 0) {
+            String url = ApiUrlBuilder.getPhotoUrl(cafe.getPhotos().get(0).getPhotoReference());
+            Picasso.with(mContext)
+                    .load(url)
+                    .fit().centerCrop()
+                    .into(holder.imgCafeCard);
+        }
         holder.tvCafeCardName.setText(cafe.getName());
         holder.tvCafeCardRate.setText(String.valueOf(cafe.getRating()));
         holder.tvCafeCardAddress.setText(cafe.getVicinity());

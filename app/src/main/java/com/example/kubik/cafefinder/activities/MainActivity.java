@@ -35,7 +35,7 @@ import retrofit2.Response;
  * Activity for main window of app.
  */
 public class MainActivity extends BaseCafeActivity
-        implements GoogleApiClient.OnConnectionFailedListener{
+        implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
 
     public static final String TAG = "MainActivity";
 
@@ -56,12 +56,14 @@ public class MainActivity extends BaseCafeActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        getIntents();
+        //getIntents();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .enableAutoManage(this, this)
                 .build();
 
@@ -70,9 +72,10 @@ public class MainActivity extends BaseCafeActivity
 
     @Override
     protected void onStart() {
+        Log.d(TAG, "onStart");
         mGoogleApiClient.connect();
         super.onStart();
-        showPlacesList();
+
     }
 
     private void getIntents() {
@@ -121,7 +124,7 @@ public class MainActivity extends BaseCafeActivity
         }
 
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
+        Log.d(TAG, "Got locations" + mLastLocation.getLatitude() + "; " + mLastLocation.getLongitude());
         if (mLastLocation != null) {
             Toast.makeText(this, String.valueOf(mLastLocation.getLatitude()) + "; "
                     + String.valueOf(mLastLocation.getLongitude()), Toast.LENGTH_SHORT).show();
@@ -133,8 +136,8 @@ public class MainActivity extends BaseCafeActivity
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<CafeList> call = apiService.getNearbyPlaces(mLastLocation.getLatitude(),
-                mLastLocation.getLongitude(), 500, "cafe", ApiUrlBuilder.getApiKey());
+        String location = mLastLocation.getLatitude() + "," + mLastLocation.getLongitude();
+        Call<CafeList> call = apiService.getNearbyPlaces(location, 500, "cafe", ApiUrlBuilder.getApiKey());
 
         call.enqueue(new Callback<CafeList>() {
             @Override
@@ -155,13 +158,24 @@ public class MainActivity extends BaseCafeActivity
                 LinearLayoutManager.VERTICAL, false);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_main_cafe_list);
         List<BaseCafeInfo> cafes = mCafeList.getResults();
-        mCafeListAdapter = new MainCafeListAdapter(cafes);
+        mCafeListAdapter = new MainCafeListAdapter(cafes, this);
         recyclerView.setAdapter(mCafeListAdapter);
         recyclerView.setLayoutManager(layoutManager);
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.e(TAG, "onConnectionFailed");
+    }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.d(TAG, "onConnected");
+        showPlacesList();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d(TAG, "Connection suspended");
     }
 }
