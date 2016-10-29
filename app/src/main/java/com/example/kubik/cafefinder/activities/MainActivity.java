@@ -7,16 +7,29 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.kubik.cafefinder.R;
+import com.example.kubik.cafefinder.adapters.MainCafeListAdapter;
+import com.example.kubik.cafefinder.helpers.ApiUrlBuilder;
+import com.example.kubik.cafefinder.models.BaseCafeInfo;
+import com.example.kubik.cafefinder.models.CafeList;
+import com.example.kubik.cafefinder.requests.ApiClient;
+import com.example.kubik.cafefinder.requests.ApiInterface;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Activity for main window of app.
@@ -34,6 +47,9 @@ public class MainActivity extends BaseCafeActivity
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
 
+    private CafeList mCafeList;
+
+    private MainCafeListAdapter mCafeListAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,10 +66,14 @@ public class MainActivity extends BaseCafeActivity
                 .build();
 
         checkPermissions();
-
-        showPlacesList();
     }
 
+    @Override
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+        showPlacesList();
+    }
 
     private void getIntents() {
         mGoogleAccount = (GoogleSignInAccount) getIntent()
@@ -88,22 +108,60 @@ public class MainActivity extends BaseCafeActivity
 
 
     private void showPlacesList() {
+        getLastLocation();
+        getCafeList();
+    }
 
+    private void getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            getPermission(ACCESS_LOCATION_CODE);
+        }
+
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        if (mLastLocation != null) {
+            Toast.makeText(this, String.valueOf(mLastLocation.getLatitude()) + "; "
+                    + String.valueOf(mLastLocation.getLongitude()), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getCafeList() {
+        getLastLocation();
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<CafeList> call = apiService.getNearbyPlaces(49.78,
+                24.06, 500, "cafe", ApiUrlBuilder.getApiKey());
+
+        call.enqueue(new Callback<CafeList>() {
+            @Override
+            public void onResponse(Call<CafeList> call, Response<CafeList> response) {
+                mCafeList = response.body();
+                showList();
+            }
+
+            @Override
+            public void onFailure(Call<CafeList> call, Throwable t) {
+                Log.e(TAG, t.toString());
+            }
+        });
+    }
+
+    private void showList() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_main_cafe_list);
+        List<BaseCafeInfo> cafes = mCafeList.getResults();
+        mCafeListAdapter = new MainCafeListAdapter(cafes);
+        recyclerView.setAdapter(mCafeListAdapter);
+        recyclerView.setLayoutManager(layoutManager);
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }
-
-    public void click(View view) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            getPermission(ACCESS_LOCATION_CODE);
-        }
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation != null) {
-            Toast.makeText(this, String.valueOf(mLastLocation.getLatitude()) + "; "
-                    + String.valueOf(mLastLocation.getLongitude()), Toast.LENGTH_SHORT).show();
-        }
     }
 }
