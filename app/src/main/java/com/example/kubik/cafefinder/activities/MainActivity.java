@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.kubik.cafefinder.R;
@@ -166,6 +167,12 @@ public class MainActivity extends BaseCafeActivity
         mCafeListAdapter = new MainCafeListAdapter(cafes, this, location);
         recyclerView.setAdapter(mCafeListAdapter);
         recyclerView.setLayoutManager(layoutManager);
+        mCafeListAdapter.setOnItemClickListener(new MainCafeListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(getApplicationContext(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

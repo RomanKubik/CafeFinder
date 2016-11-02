@@ -30,6 +30,18 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
     private Context mContext;
     private Location mLocation;
 
+    private OnItemClickListener mItemClickListener;
+
+
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    public void setOnItemClickListener(final OnItemClickListener itemClickListener) {
+        this.mItemClickListener = itemClickListener;
+    }
+
 
     public MainCafeListAdapter(List<BaseCafeInfo> cafeList, Context context, Location location) {
         this.mCafeList = cafeList;
@@ -73,7 +85,7 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
         return mCafeList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.img_cafe_card)
         ImageView imgCafeCard;
@@ -89,6 +101,15 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(view, getAdapterPosition());
+            }
         }
     }
 }
