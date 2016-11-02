@@ -9,4 +9,7 @@
     <string name="not_connected_msg">No internet access. Please try again later</string>
     <string name="cant_login_msg">Can`t login. Please try again later</string>
 
+    <!--CafeList-->
+    <string name="meters">m</string>
+
 </resources>

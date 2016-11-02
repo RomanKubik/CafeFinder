@@ -9,7 +9,7 @@ public final class ApiUrlBuilder {
     private static final String API_KEY = "AIzaSyD4XuS58KfQFN_F9DxWYv3hPIu_IULpwl4";
 
     private static final String PHOTO_BASE_URL = "https://maps.googleapis.com/maps/api/place/photo?";
-    private static final int DEFAULT_PHOTO_HEIGHT = 500;
+    private static final int DEFAULT_PHOTO_HEIGHT = 250;
 
     public static String getApiKey() {
         return API_KEY;

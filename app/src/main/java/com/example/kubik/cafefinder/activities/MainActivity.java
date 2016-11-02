@@ -56,7 +56,7 @@ public class MainActivity extends BaseCafeActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        //getIntents();
+        getIntents();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -79,8 +79,9 @@ public class MainActivity extends BaseCafeActivity
     }
 
     private void getIntents() {
-        mGoogleAccount = (GoogleSignInAccount) getIntent()
-                .getSerializableExtra(LoginActivity.EXTRA_ACCOUNT);
+
+        /*mGoogleAccount = (GoogleSignInAccount) getIntent()
+                .getSerializableExtra(LoginActivity.EXTRA_ACCOUNT);*/
     }
 
     private void checkPermissions() {
@@ -124,7 +125,6 @@ public class MainActivity extends BaseCafeActivity
         }
 
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        Log.d(TAG, "Got locations" + mLastLocation.getLatitude() + "; " + mLastLocation.getLongitude());
         if (mLastLocation != null) {
             Toast.makeText(this, String.valueOf(mLastLocation.getLatitude()) + "; "
                     + String.valueOf(mLastLocation.getLongitude()), Toast.LENGTH_SHORT).show();
@@ -137,7 +137,8 @@ public class MainActivity extends BaseCafeActivity
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
         String location = mLastLocation.getLatitude() + "," + mLastLocation.getLongitude();
-        Call<CafeList> call = apiService.getNearbyPlaces(location, 500, "cafe", ApiUrlBuilder.getApiKey());
+        Call<CafeList> call = apiService.getNearbyPlaces(location, 500, "cafe",
+                ApiUrlBuilder.getApiKey());
 
         call.enqueue(new Callback<CafeList>() {
             @Override
@@ -154,11 +155,15 @@ public class MainActivity extends BaseCafeActivity
     }
 
     private void showList() {
+        Location location = new Location("");
+        location.setLongitude(mLastLocation.getLongitude());
+        location.setLatitude(mLastLocation.getLatitude());
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_main_cafe_list);
         List<BaseCafeInfo> cafes = mCafeList.getResults();
-        mCafeListAdapter = new MainCafeListAdapter(cafes, this);
+        mCafeListAdapter = new MainCafeListAdapter(cafes, this, location);
         recyclerView.setAdapter(mCafeListAdapter);
         recyclerView.setLayoutManager(layoutManager);
     }

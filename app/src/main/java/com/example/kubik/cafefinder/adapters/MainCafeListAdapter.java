@@ -1,6 +1,7 @@
 package com.example.kubik.cafefinder.adapters;
 
 import android.content.Context;
+import android.location.Location;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+
 /**
  * Adapter for displaying main cafe list.
  */
@@ -26,10 +28,13 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
 
     private List<BaseCafeInfo> mCafeList;
     private Context mContext;
+    private Location mLocation;
 
-    public MainCafeListAdapter(List<BaseCafeInfo> cafeList, Context context) {
+
+    public MainCafeListAdapter(List<BaseCafeInfo> cafeList, Context context, Location location) {
         this.mCafeList = cafeList;
         this.mContext = context;
+        this.mLocation = location;
     }
 
     @Override
@@ -45,6 +50,9 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         BaseCafeInfo cafe = mCafeList.get(position);
+        Location location = new Location("");
+        location.setLatitude(cafe.getGeometry().getLocation().getLat());
+        location.setLongitude(cafe.getGeometry().getLocation().getLng());
         if (cafe.getPhotos().size() != 0) {
             String url = ApiUrlBuilder.getPhotoUrl(cafe.getPhotos().get(0).getPhotoReference());
             Picasso.with(mContext)
@@ -55,7 +63,8 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
         holder.tvCafeCardName.setText(cafe.getName());
         holder.tvCafeCardRate.setText(String.valueOf(cafe.getRating()));
         holder.tvCafeCardAddress.setText(cafe.getVicinity());
-
+        String distance = String.valueOf((int) location.distanceTo(mLocation)) + mContext.getString(R.string.meters);
+        holder.tvCafeCardDestination.setText(distance);
 
     }
 
