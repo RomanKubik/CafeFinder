@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_above="@+id/tv_cafe_info_name"/>
+    <TextView
+        android:id="@+id/tv_cafe_info_name"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height_super_tall"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/text_size_large_plus"
+        android:textColor="@color/black"
+        android:text="Cafe name bla bla"/>
+</RelativeLayout>

@@ -1,6 +1,7 @@
 package com.example.kubik.cafefinder.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -39,6 +40,8 @@ public class MainActivity extends BaseCafeActivity
         implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
 
     public static final String TAG = "MainActivity";
+
+    public static final String EXTRA_PLACE_ID = "EXTRA_PLACE_ID";
 
     public static final int ACCESS_LOCATION_CODE = 1001;
     public static final int ALL_PERMISSIONS_CODE = 1000;
@@ -81,8 +84,6 @@ public class MainActivity extends BaseCafeActivity
 
     private void getIntents() {
 
-        /*mGoogleAccount = (GoogleSignInAccount) getIntent()
-                .getSerializableExtra(LoginActivity.EXTRA_ACCOUNT);*/
     }
 
     private void checkPermissions() {
@@ -130,6 +131,7 @@ public class MainActivity extends BaseCafeActivity
             Toast.makeText(this, String.valueOf(mLastLocation.getLatitude()) + "; "
                     + String.valueOf(mLastLocation.getLongitude()), Toast.LENGTH_SHORT).show();
         }
+
     }
 
     private void getCafeList() {
@@ -138,7 +140,7 @@ public class MainActivity extends BaseCafeActivity
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
         String location = mLastLocation.getLatitude() + "," + mLastLocation.getLongitude();
-        Call<CafeList> call = apiService.getNearbyPlaces(location, 500, "cafe",
+        Call<CafeList> call = apiService.getNearbyPlaces(location, 1000, "cafe|restaurant",
                 ApiUrlBuilder.getApiKey());
 
         call.enqueue(new Callback<CafeList>() {
@@ -170,6 +172,11 @@ public class MainActivity extends BaseCafeActivity
         mCafeListAdapter.setOnItemClickListener(new MainCafeListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                BaseCafeInfo cafe = mCafeList.getResults().get(position);
+                String placeId = cafe.getPlaceId();
+                Intent intent = new Intent(getApplicationContext(), CafeDetailsActivity.class);
+                intent.putExtra(EXTRA_PLACE_ID, placeId);
+                startActivity(intent);
                 Toast.makeText(getApplicationContext(), String.valueOf(position), Toast.LENGTH_SHORT).show();
             }
         });

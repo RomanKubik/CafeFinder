@@ -14,6 +14,6 @@ import retrofit2.http.Query;
 public interface ApiInterface {
     @GET("nearbysearch/json")
     Call<CafeList> getNearbyPlaces(@Query("location") String location,
-                                   @Query("radius") double radius, @Query("type") String type,
+                                   @Query("radius") double radius, @Query("types") String type,
                                    @Query("key") String apiKey);
 }

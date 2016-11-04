@@ -108,8 +108,9 @@ public class LoginActivity extends BaseCafeActivity implements GoogleApiClient.O
 
     private void startMainActivity(GoogleSignInAccount acct) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(EXTRA_ACCOUNT, acct);
+//        intent.putExtra(EXTRA_ACCOUNT, acct);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        BaseCafeActivity.sSignInAccount = acct;
         startActivity(intent);
         finish();
     }

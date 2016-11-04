@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.example.kubik.cafefinder.R;
 import com.example.kubik.cafefinder.helpers.ConnectionHelper;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import butterknife.ButterKnife;
 
@@ -17,6 +18,7 @@ import butterknife.ButterKnife;
 
 public class BaseCafeActivity extends AppCompatActivity {
 
+    protected static GoogleSignInAccount sSignInAccount;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
