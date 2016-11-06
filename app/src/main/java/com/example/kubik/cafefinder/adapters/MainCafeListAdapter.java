@@ -62,9 +62,11 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         BaseCafeInfo cafe = mCafeList.get(position);
+        //Use location to get distance from current location to selected cafe
         Location location = new Location("");
         location.setLatitude(cafe.getGeometry().getLocation().getLat());
         location.setLongitude(cafe.getGeometry().getLocation().getLng());
+        //Get main cafe poster
         if (cafe.getPhotos().size() != 0) {
             String url = ApiUrlBuilder.getPhotoUrl(cafe.getPhotos().get(0).getPhotoReference());
             Picasso.with(mContext)
@@ -75,6 +77,7 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
         holder.tvCafeCardName.setText(cafe.getName());
         holder.tvCafeCardRate.setText(String.valueOf(cafe.getRating()));
         holder.tvCafeCardAddress.setText(cafe.getVicinity());
+        //Get distance
         String distance = String.valueOf((int) location.distanceTo(mLocation)) + mContext.getString(R.string.meters);
         holder.tvCafeCardDestination.setText(distance);
 

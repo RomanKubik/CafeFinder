@@ -10,25 +10,32 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.kubik.cafefinder.R;
+import com.example.kubik.cafefinder.adapters.DistanceSpinnerAdapter;
 import com.example.kubik.cafefinder.adapters.MainCafeListAdapter;
 import com.example.kubik.cafefinder.helpers.ApiUrlBuilder;
 import com.example.kubik.cafefinder.models.BaseCafeInfo;
 import com.example.kubik.cafefinder.models.CafeList;
 import com.example.kubik.cafefinder.requests.ApiClient;
 import com.example.kubik.cafefinder.requests.ApiInterface;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindString;
+import butterknife.BindView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,21 +53,34 @@ public class MainActivity extends BaseCafeActivity
     public static final int ACCESS_LOCATION_CODE = 1001;
     public static final int ALL_PERMISSIONS_CODE = 1000;
 
-    private GoogleSignInAccount mGoogleAccount;
+    private int mSearchRadius = 250;
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
 
     private CafeList mCafeList;
 
+    @BindView(R.id.rv_main_cafe_list)
+    RecyclerView mRecyclerView;
     private MainCafeListAdapter mCafeListAdapter;
+
+    @BindView(R.id.tb_main_activity)
+    Toolbar mToolbar;
+
+    @BindView(R.id.sp_main_activity)
+    Spinner mSpinner;
+
+    @BindString(R.string.search_options)
+    String mSearchOptions;
+
+    private boolean mIsFirstStart = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        super.onCreate(savedInstanceState);
 
-        getIntents();
+        setToolbar();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -72,19 +92,57 @@ public class MainActivity extends BaseCafeActivity
                 .build();
 
         checkPermissions();
+
     }
 
-    @Override
+       @Override
     protected void onStart() {
         Log.d(TAG, "onStart");
         mGoogleApiClient.connect();
         super.onStart();
+    }
+
+    private void setToolbar() {
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        final List<String> list = new ArrayList<>();
+        Collections.addAll(list, getResources().getStringArray(R.array.spinner_items));
+
+        final DistanceSpinnerAdapter adapter = new DistanceSpinnerAdapter(this, list);
+        mSpinner.setAdapter(adapter);
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i) {
+                    case 0:
+                        mSearchRadius = 250;
+                        break;
+                    case 1:
+                        mSearchRadius = 500;
+                        break;
+                    case 2:
+                        mSearchRadius = 1000;
+                        break;
+                    case 3:
+                        mSearchRadius = 2000;
+                        break;
+                }
+                if (!mIsFirstStart) {
+                    getCafeList();
+                } else {
+                    mIsFirstStart = false;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
     }
 
-    private void getIntents() {
-
-    }
 
     private void checkPermissions() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -120,9 +178,7 @@ public class MainActivity extends BaseCafeActivity
 
     private void getLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED) {
             getPermission(ACCESS_LOCATION_CODE);
         }
 
@@ -135,12 +191,11 @@ public class MainActivity extends BaseCafeActivity
     }
 
     private void getCafeList() {
-        getLastLocation();
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
         String location = mLastLocation.getLatitude() + "," + mLastLocation.getLongitude();
-        Call<CafeList> call = apiService.getNearbyPlaces(location, 1000, "cafe|restaurant",
+        Call<CafeList> call = apiService.getNearbyPlaces(location, mSearchRadius, mSearchOptions,
                 ApiUrlBuilder.getApiKey());
 
         call.enqueue(new Callback<CafeList>() {
@@ -158,26 +213,22 @@ public class MainActivity extends BaseCafeActivity
     }
 
     private void showList() {
-        Location location = new Location("");
-        location.setLongitude(mLastLocation.getLongitude());
-        location.setLatitude(mLastLocation.getLatitude());
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_main_cafe_list);
         List<BaseCafeInfo> cafes = mCafeList.getResults();
-        mCafeListAdapter = new MainCafeListAdapter(cafes, this, location);
-        recyclerView.setAdapter(mCafeListAdapter);
-        recyclerView.setLayoutManager(layoutManager);
+        mCafeListAdapter = new MainCafeListAdapter(cafes, this, mLastLocation);
+        mRecyclerView.setAdapter(mCafeListAdapter);
+        mRecyclerView.setLayoutManager(layoutManager);
         mCafeListAdapter.setOnItemClickListener(new MainCafeListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                //Start new activity with selected cafe details
                 BaseCafeInfo cafe = mCafeList.getResults().get(position);
                 String placeId = cafe.getPlaceId();
                 Intent intent = new Intent(getApplicationContext(), CafeDetailsActivity.class);
                 intent.putExtra(EXTRA_PLACE_ID, placeId);
                 startActivity(intent);
-                Toast.makeText(getApplicationContext(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, String.valueOf(position));
             }
         });
     }

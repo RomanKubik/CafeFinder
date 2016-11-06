@@ -23,13 +23,13 @@ public class BaseCafeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ButterKnife.bind(this);
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        ButterKnife.bind(this);
         try {
             if (!ConnectionHelper.isConnected(this)) {
                 Toast.makeText(this, R.string.not_connected_msg, Toast.LENGTH_LONG).show();

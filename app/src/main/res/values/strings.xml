@@ -11,5 +11,14 @@
 
     <!--CafeList-->
     <string name="meters">m</string>
+    <string name="search_options">cafe|restaurant</string>
+
+    <!--Distance options in main activity-->
+    <string-array name="spinner_items">
+        <item>250m</item>
+        <item>500m</item>
+        <item>1000m</item>
+        <item>2000m</item>
+    </string-array>
 
 </resources>

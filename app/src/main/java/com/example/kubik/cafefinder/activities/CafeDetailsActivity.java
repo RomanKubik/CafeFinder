@@ -1,9 +1,13 @@
 package com.example.kubik.cafefinder.activities;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.example.kubik.cafefinder.R;
@@ -30,9 +34,15 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         , GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     private String mPlaceId;
+
     private Place mCafeDetails;
+
     private GoogleApiClient mGoogleApiClient;
+
+    private Location mLastLocation;
+
     private MapFragment mMapFragment;
+
     private Context mContext;
 
     @Override
@@ -54,6 +64,8 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
                 .build();
         mMapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
+
+        getLastLocation();
     }
 
     @Override
@@ -67,6 +79,23 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         mPlaceId = getIntent().getStringExtra(MainActivity.EXTRA_PLACE_ID);
     }
 
+
+    private void getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+    }
 
     private void getDetails() {
         Places.GeoDataApi.getPlaceById(mGoogleApiClient, mPlaceId)

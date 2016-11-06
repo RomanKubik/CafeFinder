@@ -54,8 +54,8 @@ public class LoginActivity extends BaseCafeActivity implements GoogleApiClient.O
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
+        super.onCreate(savedInstanceState);
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
