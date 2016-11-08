@@ -73,6 +73,10 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
                     .load(url)
                     .fit().centerCrop()
                     .into(holder.imgCafeCard);
+        } else {
+            Picasso.with(mContext)
+                    .load(R.drawable.logo_cafe)
+                    .into(holder.imgCafeCard);
         }
         holder.tvCafeCardName.setText(cafe.getName());
         holder.tvCafeCardRate.setText(String.valueOf(cafe.getRating()));

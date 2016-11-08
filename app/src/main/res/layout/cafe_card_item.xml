@@ -14,8 +14,7 @@
             <ImageView
                 android:id="@+id/img_cafe_card"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/cafe_card_img"
-                android:background="@color/colorAccent"/>
+                android:layout_height="@dimen/cafe_card_img"/>
             <TextView
                 android:id="@+id/tv_cafe_card_name"
                 android:layout_width="match_parent"

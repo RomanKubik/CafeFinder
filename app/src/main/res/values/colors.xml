@@ -7,4 +7,5 @@
     <!--Default colors-->
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="statusBar">#5f240a</color>
 </resources>

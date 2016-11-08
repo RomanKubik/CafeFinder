@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -52,6 +53,7 @@ public class LoginActivity extends BaseCafeActivity implements GoogleApiClient.O
         setContentView(R.layout.login_activity);
         super.onCreate(savedInstanceState);
 
+        Picasso.with(this).load(R.drawable.logo_cafe).into(mImgLogo);
     }
 
     @OnClick(R.id.btn_login)
