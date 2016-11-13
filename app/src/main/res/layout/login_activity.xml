@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/activity_horizontal_margin">
+    android:padding="@dimen/activity_horizontal_margin"
+    android:background="@color/colorBackground">
     <ImageView
         android:id="@+id/img_logo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:background="@color/colorAccent"/>
+        android:layout_height="wrap_content"/>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="@dimen/activity_vertical_margin">
         <android.support.design.widget.TextInputLayout
@@ -36,6 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/password_et_hint"
+                android:textColorHint="@color/colorPrimaryDark"
                 android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
         <Button
