@@ -35,14 +35,19 @@ public class LoginActivity extends BaseCafeActivity implements GoogleApiClient.O
 
     @BindView(R.id.img_logo)
     ImageView mImgLogo;
+
     @BindView(R.id.et_email)
     EditText mEtEmail;
+
     @BindView(R.id.et_password)
     EditText mEtPassword;
+
     @BindView(R.id.btn_login)
     Button mBtnLogin;
+
     @BindView(R.id.btn_google_login)
-    SignInButton mBtnGoogleLogin;
+    SignInButton mBtnGoogleSignin;
+
     @BindView(R.id.tv_create_account)
     TextView mTvCreateAccount;
 
@@ -53,6 +58,7 @@ public class LoginActivity extends BaseCafeActivity implements GoogleApiClient.O
         setContentView(R.layout.login_activity);
         super.onCreate(savedInstanceState);
 
+        mBtnGoogleSignin.setSize(SignInButton.SIZE_WIDE);
         Picasso.with(this).load(R.drawable.logo_cafe).into(mImgLogo);
     }
 

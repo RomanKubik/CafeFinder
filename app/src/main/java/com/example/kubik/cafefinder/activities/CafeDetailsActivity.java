@@ -4,7 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.Window;
+import android.widget.TextView;
 
 import com.example.kubik.cafefinder.R;
 import com.google.android.gms.common.api.ResultCallback;
@@ -17,6 +21,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import butterknife.BindView;
+
 /**
  * Displays all information about selected place.
  * Show how to get there, using google maps api.
@@ -25,11 +31,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyCallback {
 
+
+    @BindView(R.id.map)
+    MapFragment mMapFragment;
+
+    @BindView(R.id.tv_cafe_info_name)
+    TextView nTvCafeName;
+
     private String mPlaceId;
 
     private Place mCafeDetails;
-
-    private MapFragment mMapFragment;
 
     private Context mContext;
 
@@ -42,8 +53,11 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
         getExtras();
 
-        mMapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        int dpHeight = (int) (displayMetrics.heightPixels / displayMetrics.density);
+
+
+        Log.d("MyTag", String.valueOf(displayMetrics.heightPixels));
     }
 
     @Override

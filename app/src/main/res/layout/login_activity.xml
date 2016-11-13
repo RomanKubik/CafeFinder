@@ -47,7 +47,9 @@
             android:layout_marginTop="@dimen/spacing_normal"
             android:layout_marginLeft="@dimen/spacing_huge"
             android:layout_marginRight="@dimen/spacing_huge"
-            android:text="@string/login_btn"/>
+            android:text="@string/login_btn"
+            android:textAllCaps="false"
+            android:textStyle="bold"/>
         <com.google.android.gms.common.SignInButton
             android:id="@+id/btn_google_login"
             android:layout_width="match_parent"

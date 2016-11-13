@@ -4,7 +4,7 @@
     <!--LoginActivity-->
     <string name="email_et_hint">Email</string>
     <string name="password_et_hint">Password</string>
-    <string name="login_btn">Login</string>
+    <string name="login_btn">Sign in</string>
     <string name="create_account_tv"><u>No account yet? Create one</u></string>
     <string name="not_connected_msg">No internet access. Please try again later</string>
     <string name="cant_login_msg">Can`t login. Please try again later</string>
@@ -12,6 +12,7 @@
     <!--CafeList-->
     <string name="meters">m</string>
     <string name="search_options">cafe|restaurant</string>
+    <string name="radius">Radius:</string>
 
     <!--Distance options in main activity-->
     <string-array name="spinner_items">

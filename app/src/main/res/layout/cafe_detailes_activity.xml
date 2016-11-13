@@ -17,6 +17,5 @@
         android:layout_alignParentBottom="true"
         android:gravity="center_vertical"
         android:textSize="@dimen/text_size_large_plus"
-        android:textColor="@color/black"
         android:text="Cafe name bla bla"/>
 </RelativeLayout>
