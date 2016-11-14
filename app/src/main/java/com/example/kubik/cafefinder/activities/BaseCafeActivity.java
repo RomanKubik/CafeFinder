@@ -85,7 +85,6 @@ public class BaseCafeActivity extends AppCompatActivity implements GoogleApiClie
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED ) {
             getPermissions();
-            return;
         }
         sLocation = LocationServices.FusedLocationApi.getLastLocation(sGoogleApiClient);
         if (sLocation == null) {
@@ -93,7 +92,7 @@ public class BaseCafeActivity extends AppCompatActivity implements GoogleApiClie
         }
     }
 
-    private void getPermissions() {
+    protected void getPermissions() {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION}
                 , ACCESS_LOCATION_CODE);
