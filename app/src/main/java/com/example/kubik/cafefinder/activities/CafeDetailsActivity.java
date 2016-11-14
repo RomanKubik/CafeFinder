@@ -6,11 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
-import android.view.Window;
-import android.widget.TextView;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.example.kubik.cafefinder.R;
+import com.example.kubik.cafefinder.fragments.WorkaroundMapFragment;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
@@ -21,7 +22,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import butterknife.BindView;
+import butterknife.BindDimen;
 
 /**
  * Displays all information about selected place.
@@ -31,12 +32,18 @@ import butterknife.BindView;
 
 public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyCallback {
 
+    private ScrollView mScrollView;
 
-    @BindView(R.id.map)
-    MapFragment mMapFragment;
+    //@BindView(R.id.map)
+    WorkaroundMapFragment mMap;
 
-    @BindView(R.id.tv_cafe_info_name)
+   /* @BindView(R.id.tv_cafe_info_name)
     TextView nTvCafeName;
+*/
+    @BindDimen(R.dimen.button_height_super_tall)
+    int mCafeNameHeightPx;
+
+    private int mScreenHeightPx;
 
     private String mPlaceId;
 
@@ -49,15 +56,33 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cafe_detailes_activity);
 
+        if (mMap == null) {
+            mMap = (WorkaroundMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            mScrollView = (ScrollView) findViewById(R.id.scv_cafe_details);
+
+            ( (WorkaroundMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                    .setListener(new WorkaroundMapFragment.OnTouchListener() {
+                        @Override
+                        public void onTouch() {
+                            mScrollView.requestDisallowInterceptTouchEvent(true);
+                        }
+                    });
+        }
+
         mContext = this;
 
         getExtras();
 
-        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-        int dpHeight = (int) (displayMetrics.heightPixels / displayMetrics.density);
+        mScreenHeightPx = getScreenHeightPx();
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 0);
+        params.height = mScreenHeightPx - mCafeNameHeightPx;
+        mMap.getView().setLayoutParams(params);
 
 
-        Log.d("MyTag", String.valueOf(displayMetrics.heightPixels));
+
+        Log.d("MyTag", String.valueOf(mCafeNameHeightPx));
     }
 
     @Override
@@ -70,6 +95,15 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         mPlaceId = getIntent().getStringExtra(MainActivity.EXTRA_PLACE_ID);
     }
 
+    private int getScreenHeightPx() {
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return displayMetrics.heightPixels - result;
+    }
 
 
     private void getDetails() {
@@ -79,9 +113,9 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
                     public void onResult(@NonNull PlaceBuffer places) {
                         if (places.getStatus().isSuccess() && places.getCount() > 0) {
                             mCafeDetails = places.get(0);
-                            mMapFragment.getMapAsync((OnMapReadyCallback) mContext);
+                            mMap.getMapAsync((OnMapReadyCallback) mContext);
                         } else {
-                            Log.d("CafeDetailsActivity", "Place not found");
+                            Log.d("MyTag", "Place not found");
                         }
                     }
                 });
