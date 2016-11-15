@@ -12,7 +12,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -46,7 +45,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
     private ScrollView mScrollView;
     private Toolbar mToolbar;
     private TextView mTvCafeName;
-    private ImageView mImgCafeImage;
+    //private ImageView mImgCafeImage;
     private WorkaroundMapFragment mMap;
 
     @BindDimen(R.dimen.button_height_super_tall)
@@ -89,7 +88,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         }
 
         mTvCafeName = (TextView) findViewById(R.id.tv_cafe_info_name);
-        mImgCafeImage = (ImageView) findViewById(R.id.img_cafe_info);
+        //mImgCafeImage = (ImageView) findViewById(R.id.img_cafe_info);
 
         mToolbar = (Toolbar) findViewById(R.id.tb_cafe_details_activity);
         setSupportActionBar(mToolbar);
