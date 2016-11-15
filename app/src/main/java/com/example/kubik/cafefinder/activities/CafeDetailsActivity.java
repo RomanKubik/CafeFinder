@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -24,12 +26,10 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.squareup.picasso.Picasso;
 
 import butterknife.BindDimen;
 
@@ -44,6 +44,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
     private static final int DEFAULT_CAMERA_PADDING = 250;
 
     private ScrollView mScrollView;
+    private Toolbar mToolbar;
     private TextView mTvCafeName;
     private ImageView mImgCafeImage;
     private WorkaroundMapFragment mMap;
@@ -64,9 +65,9 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cafe_detailes_activity);
 
-        initializeViews();
-
         mContext = this;
+
+        initializeViews();
 
         getExtras();
 
@@ -89,6 +90,13 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
         mTvCafeName = (TextView) findViewById(R.id.tv_cafe_info_name);
         mImgCafeImage = (ImageView) findViewById(R.id.img_cafe_info);
+
+        mToolbar = (Toolbar) findViewById(R.id.tb_cafe_details_activity);
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     @Override
@@ -130,28 +138,35 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
     private void setContent() {
         mScreenHeightPx = getScreenHeightPx();
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0);
         params.height = mScreenHeightPx - mCafeNameHeightPx;
-        mMap.getView().setLayoutParams(params);
+        if (mMap.getView() != null) {
+            mMap.getView().setLayoutParams(params);
+        }
 
         mTvCafeName.setText(mCafeDetails.getName());
-
+        mToolbar.setTitle(null);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        //Get cafe location
         LatLng cafeLatLng = mCafeDetails.getLatLng();
+        //Get my location
         LatLng myLatLng = new LatLng(sLocation.getLatitude(), sLocation.getLongitude());
+        //Set display area
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(cafeLatLng);
         builder.include(myLatLng);
         LatLngBounds bounds = builder.build();
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, DEFAULT_CAMERA_PADDING);
+        //Move camera to selected area
         googleMap.animateCamera(cameraUpdate);
+        //Add marKer to map
         String marker = (String) mCafeDetails.getName();
         googleMap.addMarker(new MarkerOptions().position(cafeLatLng).title(marker));
-
+        //Show my current location
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             getPermissions();
@@ -165,4 +180,12 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         getDetails();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
