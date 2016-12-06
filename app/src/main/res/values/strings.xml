@@ -14,6 +14,9 @@
     <string name="search_options">cafe|restaurant</string>
     <string name="radius">Radius:</string>
 
+    <!--CafeDetails-->
+    <string name="phone_number_error">No phone number</string>
+    <string name="link_error">No website</string>
     <!--Distance options in main activity-->
     <string-array name="spinner_items">
         <item>250m</item>

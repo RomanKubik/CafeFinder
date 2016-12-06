@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindDimen;
+import butterknife.BindString;
 
 /**
  * Displays all information about selected place.
@@ -47,9 +49,11 @@ import butterknife.BindDimen;
  * Created by Kubik on 11/3/16.
  */
 
-public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyCallback {
+public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyCallback, View.OnClickListener {
 
     private static final int DEFAULT_CAMERA_PADDING = 250;
+
+    private static final float DEFAULT_MINIMUM_CAFE_RATING = 1;
 
     private List<Bitmap> mPhotoList = new ArrayList<>();
 
@@ -59,11 +63,18 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
     private WorkaroundMapFragment mMap;
     private ViewPager mImagePager;
     private TextView mTvCafeRate;
+    private TextView mTvCafeAddress;
+    private TextView mTvCafePhone;
+    private TextView mTvCafeLink;
 
     private PagerAdapter mImagePagerAdapter;
 
     @BindDimen(R.dimen.button_height_super_tall)
     int mCafeNameHeightPx;
+    @BindString(R.string.phone_number_error)
+    String mPhoneNumberError;
+    @BindString(R.string.link_error)
+    String mLinkError;
 
     private String mPlaceId;
 
@@ -114,6 +125,10 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         mImagePager.setAdapter(mImagePagerAdapter);
 
         mTvCafeRate = (TextView) findViewById(R.id.tv_cafe_info_rate);
+        mTvCafeAddress = (TextView) findViewById(R.id.tv_cafe_info_address);
+        mTvCafeAddress.setOnClickListener(this);
+        mTvCafePhone = (TextView) findViewById(R.id.tv_cafe_info_phone);
+        mTvCafeLink = (TextView) findViewById(R.id.tv_cafe_info_link);
 
     }
 
@@ -139,7 +154,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
 
 
-    private void getDetails() {
+    private void loadCafeDetails() {
         Places.GeoDataApi.getPlaceById(sGoogleApiClient, mPlaceId)
                 .setResultCallback(new ResultCallback<PlaceBuffer>() {
                     @Override
@@ -167,8 +182,27 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         mTvCafeName.setText(mCafeDetails.getName());
         mToolbar.setTitle(null);
 
-        mTvCafeRate.setText(String.valueOf(mCafeDetails.getRating()));
+        String rating = String.valueOf(DEFAULT_MINIMUM_CAFE_RATING);
+        if (mCafeDetails.getRating() >= DEFAULT_MINIMUM_CAFE_RATING) {
+            rating = String.valueOf(mCafeDetails.getRating());
+        }
+        mTvCafeRate.setText(rating);
+        mTvCafeAddress.setText(mCafeDetails.getAddress());
+        if (mCafeDetails.getPhoneNumber().length() > 0) {
+            mTvCafePhone.setText(mCafeDetails.getPhoneNumber());
+            mTvCafePhone.setLinksClickable(true);
+        } else {
+            mTvCafePhone.setText(mPhoneNumberError);
+            mTvCafePhone.setLinksClickable(false);
+        }
 
+        if (mCafeDetails.getWebsiteUri() != null) {
+            mTvCafeLink.setText(mCafeDetails.getWebsiteUri().toString());
+            mTvCafeLink.setLinksClickable(true);
+        } else {
+            mTvCafeLink.setText(mLinkError);
+            mTvCafeLink.setLinksClickable(false);
+        }
     }
 
     private void getPhotoList() {
@@ -205,7 +239,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        getDetails();
+        loadCafeDetails();
         getPhotoList();
     }
 
@@ -241,5 +275,14 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_cafe_info_address:
+                mScrollView.fullScroll(ScrollView.FOCUS_UP);
+                break;
+        }
     }
 }

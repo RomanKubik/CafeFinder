@@ -45,6 +45,54 @@
                 android:textColor="@color/colorBackground"
                 android:background="@drawable/round_corners"
                 android:text="3.4"/>
+            <ImageView
+                android:layout_width="@dimen/icon_image"
+                android:layout_height="@dimen/icon_image"
+                android:layout_alignTop="@+id/tv_cafe_info_address"
+                android:src="@drawable/ic_place"/>
+            <TextView
+                android:id="@+id/tv_cafe_info_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/icon_image"
+                android:layout_marginLeft="@dimen/icon_image"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:layout_below="@+id/vp_image"
+                android:textSize="@dimen/text_size_large"
+                android:text="Addresssss" />
+            <ImageView
+                android:layout_width="@dimen/icon_image"
+                android:layout_height="@dimen/icon_image"
+                android:layout_alignTop="@+id/tv_cafe_info_phone"
+                android:src="@drawable/ic_settings_phone"/>
+            <TextView
+                android:id="@+id/tv_cafe_info_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:layout_marginStart="@dimen/icon_image"
+                android:layout_marginLeft="@dimen/icon_image"
+                android:layout_below="@+id/tv_cafe_info_address"
+                android:textSize="@dimen/text_size_large"
+                android:autoLink="phone"
+                android:text="063 12 14 169"/>
+            <ImageView
+                android:layout_width="@dimen/icon_image"
+                android:layout_height="@dimen/icon_image"
+                android:layout_alignTop="@+id/tv_cafe_info_link"
+                android:src="@drawable/ic_link"/>
+            <TextView
+                android:id="@+id/tv_cafe_info_link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:layout_marginStart="@dimen/icon_image"
+                android:layout_marginLeft="@dimen/icon_image"
+                android:layout_below="@+id/tv_cafe_info_phone"
+                android:textSize="@dimen/text_size_large"
+                android:autoLink="web"
+                android:text="https://google.com"/>
+
 
         </RelativeLayout>
     </ScrollView>
