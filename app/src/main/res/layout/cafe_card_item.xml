@@ -24,7 +24,7 @@
                 android:textSize="@dimen/text_size_large_plus"
                 android:layout_alignBottom="@id/img_cafe_card"
                 android:textColor="@color/colorBackground"
-                android:background="#40000000"/>
+                android:background="@color/transparentColor"/>
             <TextView
                 android:id="@+id/tv_cafe_card_rate"
                 android:layout_width="wrap_content"

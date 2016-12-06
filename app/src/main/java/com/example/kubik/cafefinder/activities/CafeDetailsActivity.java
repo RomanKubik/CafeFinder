@@ -58,6 +58,8 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
     private TextView mTvCafeName;
     private WorkaroundMapFragment mMap;
     private ViewPager mImagePager;
+    private TextView mTvCafeRate;
+
     private PagerAdapter mImagePagerAdapter;
 
     @BindDimen(R.dimen.button_height_super_tall)
@@ -110,6 +112,9 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
         mImagePager = (ViewPager) findViewById(R.id.vp_image);
         mImagePager.setAdapter(mImagePagerAdapter);
+
+        mTvCafeRate = (TextView) findViewById(R.id.tv_cafe_info_rate);
+
     }
 
     @Override
@@ -161,6 +166,9 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
         mTvCafeName.setText(mCafeDetails.getName());
         mToolbar.setTitle(null);
+
+        mTvCafeRate.setText(String.valueOf(mCafeDetails.getRating()));
+
     }
 
     private void getPhotoList() {
@@ -169,6 +177,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
             protected void onPreExecute() {
                 // Display a temporary image to show while bitmap is loading.
                 mPhotoList.add(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.logo_cafe));
+                mImagePagerAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -177,6 +186,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
                     //Remove first template image
                     if (mPhotoList.size() > 0) {
                         mPhotoList.remove(0);
+
                     }
                     // Photo has been loaded, display it.
                     for (Bitmap btm : attributedPhoto.getBitmapList()) {

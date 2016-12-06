@@ -34,7 +34,18 @@
                 android:layout_height="@dimen/cafe_details_img"
                 android:layout_below="@+id/tv_cafe_info_name">
             </android.support.v4.view.ViewPager>
-            
+            <TextView
+                android:id="@+id/tv_cafe_info_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/fab_margin"
+                android:textSize="@dimen/text_size_large_plus"
+                android:layout_alignBottom="@+id/vp_image"
+                android:layout_alignRight="@+id/vp_image"
+                android:textColor="@color/colorBackground"
+                android:background="@drawable/round_corners"
+                android:text="3.4"/>
+
         </RelativeLayout>
     </ScrollView>
     <android.support.v7.widget.Toolbar
