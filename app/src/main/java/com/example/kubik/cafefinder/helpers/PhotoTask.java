@@ -41,7 +41,7 @@ public class PhotoTask extends AsyncTask<String, Void, PhotoTask.AttributedPhoto
             return null;
         }
         final String placeId = strings[0];
-        AttributedPhoto attributedPhoto = null;
+        AttributedPhoto attributedPhoto = new AttributedPhoto();
 
         PlacePhotoMetadataResult result = Places.GeoDataApi
                 .getPlacePhotos(mGoogleApiClient, placeId).await();
@@ -49,14 +49,16 @@ public class PhotoTask extends AsyncTask<String, Void, PhotoTask.AttributedPhoto
         if (result.getStatus().isSuccess()) {
             PlacePhotoMetadataBuffer photoMetadataBuffer = result.getPhotoMetadata();
             if (photoMetadataBuffer.getCount() > 0 && !isCancelled()) {
-                // Get the first bitmap and its attributions.
-                PlacePhotoMetadata photo = photoMetadataBuffer.get(0);
-                CharSequence attribution = photo.getAttributions();
-                // Load a scaled bitmap for this photo.
-                Bitmap image = photo.getScaledPhoto(mGoogleApiClient, mWidth, mHeight).await()
-                        .getBitmap();
+                // Get all bitmaps
+                for ( int i = 0; i < photoMetadataBuffer.getCount(); i++) {
+                    PlacePhotoMetadata photo = photoMetadataBuffer.get(i);
+                    // Load a scaled bitmap for this photo.
+                    Bitmap image = photo.getScaledPhoto(mGoogleApiClient, mWidth, mHeight).await()
+                            .getBitmap();
 
-                attributedPhoto.addAttributedPhoto(attribution, image);
+                    attributedPhoto.addAttributedPhoto(image);
+                }
+
             }
             // Release the PlacePhotoMetadataBuffer.
             photoMetadataBuffer.release();
@@ -67,13 +69,11 @@ public class PhotoTask extends AsyncTask<String, Void, PhotoTask.AttributedPhoto
     /**
      * Holder for an image and its attribution.
      */
-    class AttributedPhoto {
-        List<CharSequence> attributions = new ArrayList<>();
-        List<Bitmap> bitmaps = new ArrayList<>();
+    protected class AttributedPhoto {
+        private List<Bitmap> bitmaps = new ArrayList<>();
 
 
-        void addAttributedPhoto(@NonNull CharSequence attribution, @NonNull Bitmap bitmap) {
-            attributions.add(attribution);
+        void addAttributedPhoto(@NonNull Bitmap bitmap) {
             bitmaps.add(bitmap);
         }
 
@@ -86,13 +86,9 @@ public class PhotoTask extends AsyncTask<String, Void, PhotoTask.AttributedPhoto
             }
         }
 
-        @Nullable
-        public CharSequence getAttribution(@NonNull int i) {
-            if (i >= 0 & i < attributions.size()) {
-                return attributions.get(i);
-            } else {
-                return null;
-            }
+        @NonNull
+        public List<Bitmap> getBitmapList() {
+            return bitmaps;
         }
     }
 }

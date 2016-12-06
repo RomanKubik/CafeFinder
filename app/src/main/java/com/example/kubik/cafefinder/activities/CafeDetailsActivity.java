@@ -3,10 +3,14 @@ package com.example.kubik.cafefinder.activities;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -17,7 +21,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.kubik.cafefinder.R;
+import com.example.kubik.cafefinder.adapters.ImagePagerAdapter;
 import com.example.kubik.cafefinder.fragments.WorkaroundMapFragment;
+import com.example.kubik.cafefinder.helpers.PhotoTask;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
@@ -29,6 +35,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindDimen;
 
@@ -42,16 +51,17 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
     private static final int DEFAULT_CAMERA_PADDING = 250;
 
+    private List<Bitmap> mPhotoList = new ArrayList<>();
+
     private ScrollView mScrollView;
     private Toolbar mToolbar;
     private TextView mTvCafeName;
-    //private ImageView mImgCafeImage;
     private WorkaroundMapFragment mMap;
+    private ViewPager mImagePager;
+    private PagerAdapter mImagePagerAdapter;
 
     @BindDimen(R.dimen.button_height_super_tall)
     int mCafeNameHeightPx;
-
-    private int mScreenHeightPx;
 
     private String mPlaceId;
 
@@ -70,7 +80,6 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
         getExtras();
 
-        Log.d("MyTag", String.valueOf(mCafeNameHeightPx));
     }
 
     private void initializeViews() {
@@ -88,7 +97,6 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         }
 
         mTvCafeName = (TextView) findViewById(R.id.tv_cafe_info_name);
-        //mImgCafeImage = (ImageView) findViewById(R.id.img_cafe_info);
 
         mToolbar = (Toolbar) findViewById(R.id.tb_cafe_details_activity);
         setSupportActionBar(mToolbar);
@@ -96,6 +104,12 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+
+
+        mImagePagerAdapter = new ImagePagerAdapter(mPhotoList, this);
+
+        mImagePager = (ViewPager) findViewById(R.id.vp_image);
+        mImagePager.setAdapter(mImagePagerAdapter);
     }
 
     @Override
@@ -119,6 +133,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
     }
 
 
+
     private void getDetails() {
         Places.GeoDataApi.getPlaceById(sGoogleApiClient, mPlaceId)
                 .setResultCallback(new ResultCallback<PlaceBuffer>() {
@@ -136,7 +151,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
     }
 
     private void setContent() {
-        mScreenHeightPx = getScreenHeightPx();
+        int mScreenHeightPx = getScreenHeightPx();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0);
         params.height = mScreenHeightPx - mCafeNameHeightPx;
@@ -146,6 +161,42 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
         mTvCafeName.setText(mCafeDetails.getName());
         mToolbar.setTitle(null);
+    }
+
+    private void getPhotoList() {
+        new PhotoTask(mImagePager.getWidth(), mImagePager.getHeight(), sGoogleApiClient) {
+            @Override
+            protected void onPreExecute() {
+                // Display a temporary image to show while bitmap is loading.
+                mPhotoList.add(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.logo_cafe));
+            }
+
+            @Override
+            protected void onPostExecute(AttributedPhoto attributedPhoto) {
+                if (attributedPhoto != null) {
+                    //Remove first template image
+                    if (mPhotoList.size() > 0) {
+                        mPhotoList.remove(0);
+                    }
+                    // Photo has been loaded, display it.
+                    for (Bitmap btm : attributedPhoto.getBitmapList()) {
+                        mPhotoList.add(btm);
+                    }
+
+                    mImagePagerAdapter.notifyDataSetChanged();
+                }
+            }
+        }.execute(mPlaceId);
+    }
+
+
+
+
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        getDetails();
+        getPhotoList();
     }
 
     @Override
@@ -162,7 +213,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, DEFAULT_CAMERA_PADDING);
         //Move camera to selected area
         googleMap.animateCamera(cameraUpdate);
-        //Add marKer to map
+        //Add marker to map
         String marker = (String) mCafeDetails.getName();
         googleMap.addMarker(new MarkerOptions().position(cafeLatLng).title(marker));
         //Show my current location
@@ -171,12 +222,6 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
             getPermissions();
         }
         googleMap.setMyLocationEnabled(true);
-    }
-
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        getDetails();
     }
 
     @Override
