@@ -92,7 +92,12 @@
                 android:textSize="@dimen/text_size_large"
                 android:autoLink="web"
                 android:text="https://google.com"/>
-
+            <LinearLayout
+                android:id="@+id/ll_review_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/tv_cafe_info_link"/>
 
         </RelativeLayout>
     </ScrollView>

@@ -17,17 +17,19 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.kubik.cafefinder.R;
 import com.example.kubik.cafefinder.adapters.ImagePagerAdapter;
+import com.example.kubik.cafefinder.customViews.ReviewView;
 import com.example.kubik.cafefinder.fragments.WorkaroundMapFragment;
 import com.example.kubik.cafefinder.helpers.ApiUrlBuilder;
 import com.example.kubik.cafefinder.helpers.PhotoTask;
 import com.example.kubik.cafefinder.models.CafeInfo;
-import com.example.kubik.cafefinder.models.CafeReviewList;
+import com.example.kubik.cafefinder.models.CafeReview;
 import com.example.kubik.cafefinder.requests.ApiClient;
 import com.example.kubik.cafefinder.requests.ApiInterface;
 import com.google.android.gms.common.api.ResultCallback;
@@ -74,6 +76,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
     private TextView mTvCafeAddress;
     private TextView mTvCafePhone;
     private TextView mTvCafeLink;
+    private LinearLayout mLlReviewContainer;
 
     private PagerAdapter mImagePagerAdapter;
 
@@ -88,7 +91,8 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
     private Place mCafeDetails;
 
-    private CafeInfo mReviewsList;
+    private CafeInfo mCafeInfo;
+    private List<CafeReview> mReviewList = new ArrayList<>();
 
     private Context mContext;
 
@@ -139,7 +143,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         mTvCafeAddress.setOnClickListener(this);
         mTvCafePhone = (TextView) findViewById(R.id.tv_cafe_info_phone);
         mTvCafeLink = (TextView) findViewById(R.id.tv_cafe_info_link);
-
+        mLlReviewContainer = (LinearLayout) findViewById(R.id.ll_review_container);
     }
 
     private void getExtras() {
@@ -201,24 +205,15 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         new PhotoTask(mImagePager.getWidth(), mImagePager.getHeight(), sGoogleApiClient) {
             @Override
             protected void onPreExecute() {
-                // Display a temporary image to show while bitmap is loading.
-                mPhotoList.add(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.logo_cafe));
-                mImagePagerAdapter.notifyDataSetChanged();
+
             }
 
             @Override
             protected void onPostExecute(AttributedPhoto attributedPhoto) {
                 if (attributedPhoto != null) {
-                    //Remove first template image
-                    if (mPhotoList.size() > 0) {
-                        mPhotoList.remove(0);
-
-                    }
-                    // Photo has been loaded, display it.
                     for (Bitmap btm : attributedPhoto.getBitmapList()) {
                         mPhotoList.add(btm);
                     }
-
                     mImagePagerAdapter.notifyDataSetChanged();
                 }
             }
@@ -232,7 +227,8 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         call.enqueue(new Callback<CafeInfo>() {
             @Override
             public void onResponse(Call<CafeInfo> call, Response<CafeInfo> response) {
-                mReviewsList = response.body();
+                mCafeInfo = response.body();
+                mReviewList = mCafeInfo.getResult().getReviews();
                 showReviews();
             }
 
@@ -245,9 +241,15 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
     }
 
     private void showReviews() {
-        
+        if (mReviewList.size() != 0) {
+            for (CafeReview review : mReviewList) {
+                ReviewView reviewView = new ReviewView(this);
+                reviewView.setComponents(review.getAuthorName(), (float) review.getRating()
+                        , review.getText());
+                mLlReviewContainer.addView(reviewView);
+            }
+        }
     }
-
 
     private int getScreenHeightPx() {
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();

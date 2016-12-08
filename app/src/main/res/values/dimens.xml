@@ -39,4 +39,7 @@
     <dimen name="cafe_card_img">175dp</dimen>
     <dimen name="cafe_details_img">250dp</dimen>
     <dimen name="icon_image">30dp</dimen>
+
+    <dimen name="line_separator">1dp</dimen>
+
 </resources>
