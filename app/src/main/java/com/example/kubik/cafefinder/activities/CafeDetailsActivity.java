@@ -24,7 +24,12 @@ import android.widget.TextView;
 import com.example.kubik.cafefinder.R;
 import com.example.kubik.cafefinder.adapters.ImagePagerAdapter;
 import com.example.kubik.cafefinder.fragments.WorkaroundMapFragment;
+import com.example.kubik.cafefinder.helpers.ApiUrlBuilder;
 import com.example.kubik.cafefinder.helpers.PhotoTask;
+import com.example.kubik.cafefinder.models.CafeInfo;
+import com.example.kubik.cafefinder.models.CafeReviewList;
+import com.example.kubik.cafefinder.requests.ApiClient;
+import com.example.kubik.cafefinder.requests.ApiInterface;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
@@ -42,6 +47,9 @@ import java.util.List;
 
 import butterknife.BindDimen;
 import butterknife.BindString;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Displays all information about selected place.
@@ -79,6 +87,8 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
     private String mPlaceId;
 
     private Place mCafeDetails;
+
+    private CafeInfo mReviewsList;
 
     private Context mContext;
 
@@ -132,27 +142,9 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
     private void getExtras() {
         mPlaceId = getIntent().getStringExtra(MainActivity.EXTRA_PLACE_ID);
     }
-
-    private int getScreenHeightPx() {
-        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return displayMetrics.heightPixels - result;
-    }
-
-
 
     private void loadCafeDetails() {
         Places.GeoDataApi.getPlaceById(sGoogleApiClient, mPlaceId)
@@ -233,14 +225,45 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         }.execute(mPlaceId);
     }
 
+    private void getReviews() {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<CafeInfo> call = apiService.getCafeReviews(mPlaceId, ApiUrlBuilder.getApiKey());
+        call.enqueue(new Callback<CafeInfo>() {
+            @Override
+            public void onResponse(Call<CafeInfo> call, Response<CafeInfo> response) {
+                mReviewsList = response.body();
+                showReviews();
+            }
+
+            @Override
+            public void onFailure(Call<CafeInfo> call, Throwable t) {
+                Log.d("MY_TAG", t.toString());
+            }
+        });
+
+    }
+
+    private void showReviews() {
+        
+    }
 
 
-
+    private int getScreenHeightPx() {
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return displayMetrics.heightPixels - result;
+    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         loadCafeDetails();
         getPhotoList();
+        getReviews();
     }
 
     @Override
