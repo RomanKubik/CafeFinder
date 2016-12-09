@@ -12,6 +12,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.kubik.cafefinder.R;
+import com.example.kubik.cafefinder.database.DbHelper;
+import com.example.kubik.cafefinder.database.models.Profile;
 import com.example.kubik.cafefinder.helpers.ConnectionHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -26,26 +28,38 @@ import butterknife.ButterKnife;
 /**
  * Base class for all activities. This class binds views initialized in child activity.
  * Gets permissions, sets up GoogleApiClient and gets last known location, checks internet access.
+ * Open and close realm database connection.
  */
 
-public class BaseCafeActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class BaseCafeActivity extends AppCompatActivity
+        implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     private static final int ACCESS_LOCATION_CODE = 1001;
-
 
     protected static GoogleSignInAccount sSignInAccount;
     protected static GoogleApiClient sGoogleApiClient;
     protected static Location sLocation;
 
+    protected static DbHelper sDbHelper;
+
+    protected static Profile sProfile;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        sDbHelper = DbHelper.getInstance(this);
         setupGoogleApi();
         getPermissions();
 
         ButterKnife.bind(this);
 
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

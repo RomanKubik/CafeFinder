@@ -33,6 +33,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activities.CreateAccountActivity">
+
+        </activity>
+
         <activity android:name=".activities.MainActivity">
             
         </activity>

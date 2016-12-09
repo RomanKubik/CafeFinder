@@ -20,6 +20,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -35,21 +36,19 @@ public class LoginActivity extends BaseCafeActivity implements GoogleApiClient.O
 
     @BindView(R.id.img_logo)
     ImageView mImgLogo;
-
     @BindView(R.id.et_email)
     EditText mEtEmail;
-
     @BindView(R.id.et_password)
     EditText mEtPassword;
-
     @BindView(R.id.btn_login)
     Button mBtnLogin;
-
     @BindView(R.id.btn_google_login)
     SignInButton mBtnGoogleSignin;
-
     @BindView(R.id.tv_create_account)
     TextView mTvCreateAccount;
+
+    @BindString(R.string.wrong_account)
+    String mWrongAccountMsg;
 
 
 
@@ -60,17 +59,6 @@ public class LoginActivity extends BaseCafeActivity implements GoogleApiClient.O
 
         mBtnGoogleSignin.setSize(SignInButton.SIZE_WIDE);
         Picasso.with(this).load(R.drawable.logo_cafe).into(mImgLogo);
-    }
-
-    @OnClick(R.id.btn_login)
-    public void onBtnLoginClicked() {
-        Log.d(TAG, "Button Login Clicked");
-    }
-
-    @OnClick(R.id.btn_google_login)
-    public void onBtnGoogleLoginClicked() {
-        Log.d(TAG, "Button Google Login Clicked");
-        login();
     }
 
     private void login() {
@@ -115,4 +103,31 @@ public class LoginActivity extends BaseCafeActivity implements GoogleApiClient.O
         Log.d(TAG, "Error msg: " + connectionResult.getErrorMessage() + "\nError code: "
                 + connectionResult.getErrorCode());
     }
+
+    @OnClick(R.id.btn_login)
+    public void onBtnLoginClicked() {
+        String email = mEtEmail.getText().toString();
+        String password = mEtPassword.getText().toString();
+        sProfile = sDbHelper.loginProfile(email, password);
+        if (sProfile != null) {
+            startActivity(new Intent(this, MainActivity.class));
+            Toast.makeText(this, R.string.success_msg, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, R.string.wrong_account, Toast.LENGTH_SHORT).show();
+        }
+        Log.d(TAG, "Button Login Clicked");
+    }
+
+    @OnClick(R.id.btn_google_login)
+    public void onBtnGoogleLoginClicked() {
+        Log.d(TAG, "Button Google Login Clicked");
+        login();
+    }
+
+    @OnClick(R.id.tv_create_account)
+    public void onTvCreateAccountClicked() {
+        Intent intent = new Intent(this, CreateAccountActivity.class);
+        startActivity(intent);
+    }
+
 }
