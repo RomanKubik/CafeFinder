@@ -98,7 +98,7 @@ public class MainActivity extends BaseCafeActivity {
                         break;
                 }
                 if (!mIsFirstStart) {
-                    getCafeList();
+                    loadCafeList();
                 } else {
                     mIsFirstStart = false;
                 }
@@ -112,7 +112,7 @@ public class MainActivity extends BaseCafeActivity {
 
     }
 
-    private void getCafeList() {
+    private void loadCafeList() {
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
@@ -158,7 +158,8 @@ public class MainActivity extends BaseCafeActivity {
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(TAG, "onConnected");
-        getCafeList();
+        if (mIsFirstStart)
+            loadCafeList();
     }
 
 }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -178,6 +179,9 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
             @Override
             protected void onPostExecute(AttributedPhoto attributedPhoto) {
                 if (attributedPhoto != null) {
+                    if (attributedPhoto.getBitmapList().size() == 0) {
+                        mPhotoList.add(BitmapFactory.decodeResource(getResources(), R.drawable.logo_cafe));
+                    }
                     for (Bitmap btm : attributedPhoto.getBitmapList()) {
                         mPhotoList.add(btm);
                     }

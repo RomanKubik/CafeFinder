@@ -358,9 +358,4 @@ public final class DbHelper {
         return reviews;
     }
 
-    public void close() {
-        this.mRealm.close();
-    }
-
-
 }

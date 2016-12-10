@@ -66,7 +66,7 @@ public class BaseCafeActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        sDbHelper.close();
+        mRealm.close();
     }
 
     @Override
