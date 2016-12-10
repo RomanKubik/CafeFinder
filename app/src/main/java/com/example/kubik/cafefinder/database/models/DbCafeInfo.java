@@ -7,7 +7,8 @@ import io.realm.RealmObject;
  * Created by Kubik on 12/8/16.
  */
 
-public class CafeInfo extends RealmObject {
+public class DbCafeInfo extends RealmObject {
+    private String placeId;
     private String name;
     private String address;
     private String phoneNumber;
@@ -17,6 +18,14 @@ public class CafeInfo extends RealmObject {
     private double lng;
     private RealmList<Image> images;
     private RealmList<Review> reviews;
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
 
     public String getName() {
         return name;

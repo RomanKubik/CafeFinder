@@ -30,6 +30,10 @@ public class ImagePagerAdapter extends PagerAdapter {
         mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    public void updateImageList(List<Bitmap> imageList) {
+        mImageList = imageList;
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getCount() {

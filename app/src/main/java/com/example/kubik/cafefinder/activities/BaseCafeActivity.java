@@ -16,7 +16,6 @@ import com.example.kubik.cafefinder.database.DbHelper;
 import com.example.kubik.cafefinder.database.models.Profile;
 import com.example.kubik.cafefinder.helpers.ConnectionHelper;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -24,6 +23,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 /**
  * Base class for all activities. This class binds views initialized in child activity.
@@ -36,10 +37,10 @@ public class BaseCafeActivity extends AppCompatActivity
 
     private static final int ACCESS_LOCATION_CODE = 1001;
 
-    protected static GoogleSignInAccount sSignInAccount;
     protected static GoogleApiClient sGoogleApiClient;
     protected static Location sLocation;
 
+    public Realm mRealm;
     protected static DbHelper sDbHelper;
 
     protected static Profile sProfile;
@@ -48,18 +49,24 @@ public class BaseCafeActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sDbHelper = DbHelper.getInstance(this);
+        Realm.init(this);
+        RealmConfiguration configuration = new RealmConfiguration
+                                                .Builder()
+                                                .deleteRealmIfMigrationNeeded()
+                                                .build();
+        mRealm = Realm.getInstance(configuration);
+
+        sDbHelper = DbHelper.getInstance(mRealm);
         setupGoogleApi();
         getPermissions();
 
         ButterKnife.bind(this);
-
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        sDbHelper.close();
     }
 
     @Override

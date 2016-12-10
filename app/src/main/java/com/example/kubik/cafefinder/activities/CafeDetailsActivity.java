@@ -4,7 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -48,7 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindDimen;
-import butterknife.BindString;
+import butterknife.BindDrawable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -65,8 +66,6 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
     private static final float DEFAULT_MINIMUM_CAFE_RATING = 1;
 
-    private List<Bitmap> mPhotoList = new ArrayList<>();
-
     private ScrollView mScrollView;
     private Toolbar mToolbar;
     private TextView mTvCafeName;
@@ -77,21 +76,22 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
     private TextView mTvCafePhone;
     private TextView mTvCafeLink;
     private LinearLayout mLlReviewContainer;
+    private ImageView mImgLike;
 
-    private PagerAdapter mImagePagerAdapter;
+    private ImagePagerAdapter mImagePagerAdapter;
 
     @BindDimen(R.dimen.button_height_super_tall)
     int mCafeNameHeightPx;
-    @BindString(R.string.phone_number_error)
-    String mPhoneNumberError;
-    @BindString(R.string.link_error)
-    String mLinkError;
+    @BindDrawable(R.drawable.heart)
+    Drawable mNotFavouriteHeart;
+    @BindDrawable(R.drawable.filled_heart)
+    Drawable mFavouriteHeart;
 
     private String mPlaceId;
 
     private Place mCafeDetails;
-
     private CafeInfo mCafeInfo;
+    private List<Bitmap> mPhotoList = new ArrayList<>();
     private List<CafeReview> mReviewList = new ArrayList<>();
 
     private Context mContext;
@@ -138,6 +138,8 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         mImagePager = (ViewPager) findViewById(R.id.vp_image);
         mImagePager.setAdapter(mImagePagerAdapter);
 
+        mImgLike = (ImageView) findViewById(R.id.img_like);
+        mImgLike.setOnClickListener(this);
         mTvCafeRate = (TextView) findViewById(R.id.tv_cafe_info_rate);
         mTvCafeAddress = (TextView) findViewById(R.id.tv_cafe_info_address);
         mTvCafeAddress.setOnClickListener(this);
@@ -157,7 +159,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
                     public void onResult(@NonNull PlaceBuffer places) {
                         if (places.getStatus().isSuccess() && places.getCount() > 0) {
                             mCafeDetails = places.get(0);
-                            setContent();
+                            showBaseInformation();
                             mMap.getMapAsync((OnMapReadyCallback) mContext);
                         } else {
                             Log.d("MyTag", "Place not found");
@@ -166,7 +168,54 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
                 });
     }
 
-    private void setContent() {
+    private void loadPhotoList() {
+        new PhotoTask(mImagePager.getWidth(), mImagePager.getHeight(), sGoogleApiClient) {
+            @Override
+            protected void onPreExecute() {
+
+            }
+
+            @Override
+            protected void onPostExecute(AttributedPhoto attributedPhoto) {
+                if (attributedPhoto != null) {
+                    for (Bitmap btm : attributedPhoto.getBitmapList()) {
+                        mPhotoList.add(btm);
+                    }
+                    mImagePagerAdapter.notifyDataSetChanged();
+                }
+            }
+        }.execute(mPlaceId);
+    }
+
+    private void loadReviews() {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<CafeInfo> call = apiService.getCafeReviews(mPlaceId, ApiUrlBuilder.getApiKey());
+        call.enqueue(new Callback<CafeInfo>() {
+            @Override
+            public void onResponse(Call<CafeInfo> call, Response<CafeInfo> response) {
+                mCafeInfo = response.body();
+                mReviewList = mCafeInfo.getResult().getReviews();
+                showReviews();
+            }
+
+            @Override
+            public void onFailure(Call<CafeInfo> call, Throwable t) {
+                Log.d("MY_TAG", t.toString());
+            }
+        });
+
+    }
+
+    private void showAll() {
+        showBaseInformation();
+        showReviews();
+        mImagePagerAdapter.updateImageList(mPhotoList);
+        mImagePagerAdapter.notifyDataSetChanged();
+        mMap.getMapAsync((OnMapReadyCallback) mContext);
+    }
+
+    private void showBaseInformation() {
         int mScreenHeightPx = getScreenHeightPx();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0);
@@ -188,7 +237,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
             mTvCafePhone.setText(mCafeDetails.getPhoneNumber());
             mTvCafePhone.setLinksClickable(true);
         } else {
-            mTvCafePhone.setText(mPhoneNumberError);
+            mTvCafePhone.setText(R.string.phone_number_error);
             mTvCafePhone.setLinksClickable(false);
         }
 
@@ -196,48 +245,9 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
             mTvCafeLink.setText(mCafeDetails.getWebsiteUri().toString());
             mTvCafeLink.setLinksClickable(true);
         } else {
-            mTvCafeLink.setText(mLinkError);
+            mTvCafeLink.setText(R.string.link_error);
             mTvCafeLink.setLinksClickable(false);
         }
-    }
-
-    private void getPhotoList() {
-        new PhotoTask(mImagePager.getWidth(), mImagePager.getHeight(), sGoogleApiClient) {
-            @Override
-            protected void onPreExecute() {
-
-            }
-
-            @Override
-            protected void onPostExecute(AttributedPhoto attributedPhoto) {
-                if (attributedPhoto != null) {
-                    for (Bitmap btm : attributedPhoto.getBitmapList()) {
-                        mPhotoList.add(btm);
-                    }
-                    mImagePagerAdapter.notifyDataSetChanged();
-                }
-            }
-        }.execute(mPlaceId);
-    }
-
-    private void getReviews() {
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-
-        Call<CafeInfo> call = apiService.getCafeReviews(mPlaceId, ApiUrlBuilder.getApiKey());
-        call.enqueue(new Callback<CafeInfo>() {
-            @Override
-            public void onResponse(Call<CafeInfo> call, Response<CafeInfo> response) {
-                mCafeInfo = response.body();
-                mReviewList = mCafeInfo.getResult().getReviews();
-                showReviews();
-            }
-
-            @Override
-            public void onFailure(Call<CafeInfo> call, Throwable t) {
-                Log.d("MY_TAG", t.toString());
-            }
-        });
-
     }
 
     private void showReviews() {
@@ -251,21 +261,22 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
         }
     }
 
-    private int getScreenHeightPx() {
-        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return displayMetrics.heightPixels - result;
-    }
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        loadCafeDetails();
-        getPhotoList();
-        getReviews();
+        if (sDbHelper.isFavouritePlace(sProfile, mPlaceId)) {
+            mImgLike.setImageDrawable(mFavouriteHeart);
+            mCafeDetails = sDbHelper.getPlaceInfo(sProfile, mPlaceId);
+            mPhotoList = sDbHelper.getImages(sProfile, mPlaceId);
+            mReviewList = sDbHelper.getReviews(sProfile, mPlaceId);
+            showAll();
+            Log.d("MyTag", "Loaded from cache");
+        } else {
+            mImgLike.setImageDrawable(mNotFavouriteHeart);
+            loadCafeDetails();
+            loadPhotoList();
+            loadReviews();
+            Log.d("MyTag", "Loaded from internet");
+        }
     }
 
     @Override
@@ -308,6 +319,29 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
             case R.id.tv_cafe_info_address:
                 mScrollView.fullScroll(ScrollView.FOCUS_UP);
                 break;
+            case R.id.img_like:
+                if (sDbHelper.isFavouritePlace(sProfile, mPlaceId)) {
+                    sDbHelper.removeFavouriteCafe(sProfile, mPlaceId);
+                    mImgLike.setImageDrawable(mNotFavouriteHeart);
+                    Log.d("MyTag", "Removed from favourite");
+                } else {
+                    sDbHelper.addFavouriteCafe(sProfile, mPlaceId, mCafeDetails, mPhotoList
+                            , mReviewList);
+                    mImgLike.setImageDrawable(mFavouriteHeart);
+                    Log.d("MyTag", "Added to favourite");
+                }
+                break;
         }
     }
+
+    private int getScreenHeightPx() {
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return displayMetrics.heightPixels - result;
+    }
+
 }

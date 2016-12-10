@@ -28,6 +28,14 @@
                 android:gravity="center_vertical"
                 android:textSize="@dimen/text_size_large_plus"
                 android:text="Cafe name bla bla"/>
+            <ImageView
+                android:id="@+id/img_like"
+                android:layout_width="@dimen/button_height_normal"
+                android:layout_height="@dimen/button_height_super_tall"
+                android:layout_alignBottom="@+id/tv_cafe_info_name"
+                android:layout_alignRight="@+id/tv_cafe_info_name"
+                android:layout_marginRight="@dimen/spacing_tiny"
+                android:src="@drawable/heart"/>
             <android.support.v4.view.ViewPager
                 android:id="@+id/vp_image"
                 android:layout_width="match_parent"

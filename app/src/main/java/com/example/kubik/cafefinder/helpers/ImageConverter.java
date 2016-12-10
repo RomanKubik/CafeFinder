@@ -18,12 +18,16 @@ public final class ImageConverter {
     private ImageConverter(){}
 
     public static byte[] bitmapToByteConverter(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
+        if (bitmap != null) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            return stream.toByteArray();
+        } else {
+            return new byte[0];
+        }
     }
 
-    public static Bitmap bytoToBitmapConverter(byte[] byteArray) {
+    public static Bitmap byteToBitmapConverter(byte[] byteArray) {
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
     }
 

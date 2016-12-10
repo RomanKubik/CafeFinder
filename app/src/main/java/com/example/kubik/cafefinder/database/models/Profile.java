@@ -12,7 +12,7 @@ public class Profile extends RealmObject {
     private String email;
     private String personId;
     private byte[] photo;
-    private RealmList<CafeInfo> favouriteList;
+    private RealmList<DbCafeInfo> favouriteList;
 
     public String getName() {
         return name;
@@ -46,11 +46,11 @@ public class Profile extends RealmObject {
         this.photo = photo;
     }
 
-    public RealmList<CafeInfo> getFavouriteList() {
+    public RealmList<DbCafeInfo> getFavouriteList() {
         return favouriteList;
     }
 
-    public void setFavouriteList(RealmList<CafeInfo> favouriteList) {
+    public void setFavouriteList(RealmList<DbCafeInfo> favouriteList) {
         this.favouriteList = favouriteList;
     }
 }
