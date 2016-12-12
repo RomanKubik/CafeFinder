@@ -75,14 +75,18 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
                     .load(url)
                     .fit().centerCrop()
                     .into(holder.imgCafeCard);
+        } else if (cafe.getPoster() != null) {
+            holder.imgCafeCard.setImageBitmap(cafe.getPoster());
+            holder.imgCafeCard.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             Picasso.with(mContext)
                     .load(R.drawable.logo_cafe)
                     .into(holder.imgCafeCard);
         }
+
         holder.tvCafeCardName.setText(cafe.getName());
         if (cafe.getRating() >= DEFAULT_MINIMUM_CAFE_RATING) {
-            holder.tvCafeCardRate.setText(String.valueOf(cafe.getRating()));
+            holder.tvCafeCardRate.setText(String.format("%.1f", cafe.getRating()));
         } else {
             holder.tvCafeCardRate.setText(String.valueOf(DEFAULT_MINIMUM_CAFE_RATING));
         }

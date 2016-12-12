@@ -9,7 +9,11 @@ import com.example.kubik.cafefinder.database.models.Image;
 import com.example.kubik.cafefinder.database.models.Profile;
 import com.example.kubik.cafefinder.database.models.Review;
 import com.example.kubik.cafefinder.helpers.ImageConverter;
+import com.example.kubik.cafefinder.models.BaseCafeInfo;
+import com.example.kubik.cafefinder.models.CafeList;
 import com.example.kubik.cafefinder.models.CafeReview;
+import com.example.kubik.cafefinder.models.Geometry;
+import com.example.kubik.cafefinder.models.Location;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -110,6 +114,27 @@ public final class DbHelper {
                 .equalTo("placeId", placeId).findFirst();
         profile.getFavouriteList().remove(cafe);
         mRealm.commitTransaction();
+    }
+
+    public List<BaseCafeInfo> getFavouriteCafeList(Profile profile) {
+        List<BaseCafeInfo> cafeList = new ArrayList<>();
+        RealmList<DbCafeInfo> realmList = profile.getFavouriteList();
+        for (DbCafeInfo cafeInfo : realmList) {
+            BaseCafeInfo baseCafeInfo = new BaseCafeInfo();
+            baseCafeInfo.setName(cafeInfo.getName());
+            baseCafeInfo.setRating(cafeInfo.getRating());
+            baseCafeInfo.setPlaceId(cafeInfo.getPlaceId());
+            Location location = new Location();
+            location.setLat(cafeInfo.getLat());
+            location.setLng(cafeInfo.getLng());
+            Geometry geometry = new Geometry();
+            geometry.setLocation(location);
+            baseCafeInfo.setGeometry(geometry);
+            baseCafeInfo.setPoster(ImageConverter.byteToBitmapConverter(cafeInfo.getImages().first().getImage()));
+            baseCafeInfo.setVicinity(cafeInfo.getAddress());
+            cafeList.add(baseCafeInfo);
+        }
+        return cafeList;
     }
 
     public DbCafeInfo createCafeInfo(String placeId, String name, String address, String phoneNumber
