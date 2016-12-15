@@ -44,7 +44,7 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
 
     private int mSearchRadius = 250;
 
-    private CafeList mCafeList;
+    private CafeList mCafeList = new CafeList();
 
     @BindView(R.id.rv_main_cafe_list)
     RecyclerView mRecyclerView;
@@ -77,6 +77,10 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
        @Override
     protected void onStart() {
         Log.d(TAG, "onStart");
+        if (mIsFavouriteList) {
+            mCafeList.setResults(sDbHelper.getFavouriteCafeList(sProfile));
+            showList();
+        }
         super.onStart();
     }
 

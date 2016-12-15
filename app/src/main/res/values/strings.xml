@@ -15,6 +15,7 @@
     <string name="create_account_btn">Create account</string>
     <string name="create_account_title">Create account</string>
     <string name="account_exist_msg">Account with this email already exists</string>
+    <string name="no_email_msg">Please enter your email</string>
     <string name="short_password_msg">Too short password. It must be from 6 to 20 characters</string>
     <string name="long_password_msg">Too long password. It must be from 6 to 20 characters</string>
     <string name="enter_name_msg">Please enter your name</string>

@@ -167,8 +167,10 @@ public final class DbHelper {
         dbCafeInfo.setName(cafeDetails.getName().toString());
         dbCafeInfo.setAddress(cafeDetails.getAddress().toString());
         dbCafeInfo.setRating(cafeDetails.getRating());
-        dbCafeInfo.setLink(cafeDetails.getWebsiteUri().toString());
-        dbCafeInfo.setPhoneNumber(cafeDetails.getPhoneNumber().toString());
+        if (cafeDetails.getWebsiteUri() != null)
+            dbCafeInfo.setLink(cafeDetails.getWebsiteUri().toString());
+        if (cafeDetails.getPhoneNumber() != null)
+            dbCafeInfo.setPhoneNumber(cafeDetails.getPhoneNumber().toString());
         dbCafeInfo.setLat(cafeDetails.getLatLng().latitude);
         dbCafeInfo.setLng(cafeDetails.getLatLng().longitude);
         if (!wasInTransaction) {
@@ -338,7 +340,9 @@ public final class DbHelper {
 
             @Override
             public Uri getWebsiteUri() {
-                return Uri.parse(dbCafeInfo.getLink());
+                if (dbCafeInfo.getLink() != null)
+                    return Uri.parse(dbCafeInfo.getLink());
+                return null;
             }
 
             @Override

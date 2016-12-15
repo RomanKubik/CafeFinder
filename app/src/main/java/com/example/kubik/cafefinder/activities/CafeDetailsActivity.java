@@ -330,7 +330,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
                     Log.d("MyTag", "Removed from favourite");
                 } else {
                     sDbHelper.addFavouriteCafe(sProfile, mPlaceId, mCafeDetails, mPhotoList
-                            , mReviewList);
+                                    , mReviewList);
                     mImgLike.setImageDrawable(mFavouriteHeart);
                     Log.d("MyTag", "Added to favourite");
                 }

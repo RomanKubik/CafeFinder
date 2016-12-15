@@ -87,6 +87,10 @@ public class CreateAccountActivity extends BaseCafeActivity {
             Toast.makeText(this, R.string.account_exist_msg, Toast.LENGTH_SHORT).show();
             return false;
         }
+        if (mEmail.length() == 0) {
+            Toast.makeText(this, R.string.no_email_msg, Toast.LENGTH_SHORT).show();
+            return false;
+        }
         if (mName.length() == 0) {
             Toast.makeText(this, R.string.enter_name_msg, Toast.LENGTH_SHORT).show();
             return false;
@@ -106,6 +110,11 @@ public class CreateAccountActivity extends BaseCafeActivity {
             Toast.makeText(this, R.string.success_msg, Toast.LENGTH_SHORT).show();
             finish();
         }
+    }
+
+    @OnClick(R.id.img_create_profile)
+    public void onChoosePictureClicked() {
+
     }
 
 

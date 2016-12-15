@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.example.kubik.cafefinder.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -27,6 +28,7 @@ import com.squareup.picasso.Target;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Class for working with login_activity
@@ -58,6 +60,7 @@ public class LoginActivity extends BaseCafeActivity implements GoogleApiClient.O
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.login_activity);
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
 
         mBtnGoogleSignin.setSize(SignInButton.SIZE_WIDE);
         Picasso.with(this).load(R.drawable.logo_cafe).into(mImgLogo);
