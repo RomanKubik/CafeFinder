@@ -4,15 +4,31 @@
     <!--LoginActivity-->
     <string name="email_et_hint">Email</string>
     <string name="password_et_hint">Password</string>
-    <string name="login_btn">Login</string>
+    <string name="login_btn">Sign in</string>
     <string name="create_account_tv"><u>No account yet? Create one</u></string>
     <string name="not_connected_msg">No internet access. Please try again later</string>
     <string name="cant_login_msg">Can`t login. Please try again later</string>
+    <string name="wrong_account">Wrong email or password</string>
+
+    <!--CreateAccountActivity-->
+    <string name="name_et_hint">Name</string>
+    <string name="create_account_btn">Create account</string>
+    <string name="create_account_title">Create account</string>
+    <string name="account_exist_msg">Account with this email already exists</string>
+    <string name="no_email_msg">Please enter your email</string>
+    <string name="short_password_msg">Too short password. It must be from 6 to 20 characters</string>
+    <string name="long_password_msg">Too long password. It must be from 6 to 20 characters</string>
+    <string name="enter_name_msg">Please enter your name</string>
+    <string name="success_msg">Success</string>
 
     <!--CafeList-->
     <string name="meters">m</string>
     <string name="search_options">cafe|restaurant</string>
+    <string name="radius">Radius:</string>
 
+    <!--CafeDetails-->
+    <string name="phone_number_error">No phone number</string>
+    <string name="link_error">No website</string>
     <!--Distance options in main activity-->
     <string-array name="spinner_items">
         <item>250m</item>

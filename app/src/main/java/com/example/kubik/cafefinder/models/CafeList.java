@@ -10,22 +10,12 @@ import java.util.List;
  */
 
 public class CafeList {
-    @SerializedName("html_attributions")
-    private List<Object> htmlAttributions = new ArrayList<>();
     @SerializedName("next_page_token")
     private String nextPageToken;
     @SerializedName("results")
     private List<BaseCafeInfo> results = new ArrayList<>();
     @SerializedName("status")
     private String status;
-
-    public List<Object> getHtmlAttributions() {
-        return htmlAttributions;
-    }
-
-    public void setHtmlAttributions(List<Object> htmlAttributions) {
-        this.htmlAttributions = htmlAttributions;
-    }
 
     public String getNextPageToken() {
         return nextPageToken;

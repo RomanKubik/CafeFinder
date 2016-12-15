@@ -13,5 +13,11 @@
         <item name="android:colorButtonNormal" tools:targetApi="lollipop">@color/white</item>
     </style>
 
+    <!--Transparent toolbar -->
+    <style name="CustomActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <!-- Support library compatibility -->
+        <item name="windowActionBarOverlay">true</item>
+    </style>
 
 </resources>

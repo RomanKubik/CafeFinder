@@ -33,6 +33,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activities.CreateAccountActivity">
+
+        </activity>
+
         <activity android:name=".activities.MainActivity">
             
         </activity>
@@ -40,6 +44,9 @@
         <activity android:name=".activities.CafeDetailsActivity">
 
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="233640e9f6b617b44be9d00285c7743485f1fd82" />
     </application>
 
 </manifest>

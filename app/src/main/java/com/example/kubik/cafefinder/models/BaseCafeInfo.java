@@ -1,5 +1,7 @@
 package com.example.kubik.cafefinder.models;
 
+import android.graphics.Bitmap;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -27,6 +29,8 @@ public class BaseCafeInfo {
     private List<String> types = new ArrayList<>();
     @SerializedName("vicinity")
     private String vicinity;
+    //For cached poster
+    private Bitmap poster;
 
     public Geometry getGeometry() {
         return geometry;
@@ -90,5 +94,13 @@ public class BaseCafeInfo {
 
     public void setVicinity(String vicinity) {
         this.vicinity = vicinity;
+    }
+
+    public Bitmap getPoster() {
+        return poster;
+    }
+
+    public void setPoster(Bitmap poster) {
+        this.poster = poster;
     }
 }

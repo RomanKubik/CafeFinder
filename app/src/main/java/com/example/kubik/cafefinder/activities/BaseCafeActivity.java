@@ -12,9 +12,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.kubik.cafefinder.R;
+import com.example.kubik.cafefinder.database.DbHelper;
+import com.example.kubik.cafefinder.database.models.Profile;
 import com.example.kubik.cafefinder.helpers.ConnectionHelper;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -22,30 +23,50 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 /**
  * Base class for all activities. This class binds views initialized in child activity.
  * Gets permissions, sets up GoogleApiClient and gets last known location, checks internet access.
+ * Open and close realm database connection.
  */
 
-public class BaseCafeActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class BaseCafeActivity extends AppCompatActivity
+        implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     private static final int ACCESS_LOCATION_CODE = 1001;
 
-
-    protected static GoogleSignInAccount sSignInAccount;
     protected static GoogleApiClient sGoogleApiClient;
     protected static Location sLocation;
+
+    public Realm mRealm;
+    protected static DbHelper sDbHelper;
+
+    protected static Profile sProfile;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Realm.init(this);
+        RealmConfiguration configuration = new RealmConfiguration
+                                                .Builder()
+                                                .deleteRealmIfMigrationNeeded()
+                                                .build();
+        mRealm = Realm.getInstance(configuration);
+
+        sDbHelper = DbHelper.getInstance(mRealm);
         setupGoogleApi();
         getPermissions();
 
         ButterKnife.bind(this);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRealm.close();
     }
 
     @Override
@@ -85,7 +106,6 @@ public class BaseCafeActivity extends AppCompatActivity implements GoogleApiClie
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED ) {
             getPermissions();
-            return;
         }
         sLocation = LocationServices.FusedLocationApi.getLastLocation(sGoogleApiClient);
         if (sLocation == null) {
@@ -93,7 +113,7 @@ public class BaseCafeActivity extends AppCompatActivity implements GoogleApiClie
         }
     }
 
-    private void getPermissions() {
+    protected void getPermissions() {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION}
                 , ACCESS_LOCATION_CODE);

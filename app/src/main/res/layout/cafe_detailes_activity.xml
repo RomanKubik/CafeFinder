@@ -1,22 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <fragment
-        android:id="@+id/map"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_cafe_details"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground">
+    <ScrollView
+        android:id="@+id/scv_cafe_details"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.google.android.gms.maps.MapFragment"
-        android:layout_above="@+id/tv_cafe_info_name"/>
-    <TextView
-        android:id="@+id/tv_cafe_info_name"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <fragment
+                android:id="@+id/map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:name="com.example.kubik.cafefinder.fragments.WorkaroundMapFragment"/>
+            <TextView
+                android:id="@+id/tv_cafe_info_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height_super_tall"
+                android:layout_below="@+id/map"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/text_size_large_plus"
+                android:text="Cafe name bla bla"/>
+            <ImageView
+                android:id="@+id/img_like"
+                android:layout_width="@dimen/button_height_normal"
+                android:layout_height="@dimen/button_height_super_tall"
+                android:layout_alignBottom="@+id/tv_cafe_info_name"
+                android:layout_alignRight="@+id/tv_cafe_info_name"
+                android:layout_marginRight="@dimen/spacing_tiny"
+                android:src="@drawable/heart"/>
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_image"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cafe_details_img"
+                android:layout_below="@+id/tv_cafe_info_name">
+            </android.support.v4.view.ViewPager>
+            <TextView
+                android:id="@+id/tv_cafe_info_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/fab_margin"
+                android:textSize="@dimen/text_size_large_plus"
+                android:layout_alignBottom="@+id/vp_image"
+                android:layout_alignRight="@+id/vp_image"
+                android:textColor="@color/colorBackground"
+                android:background="@drawable/round_corners"
+                android:text="3.4"/>
+            <ImageView
+                android:layout_width="@dimen/icon_image"
+                android:layout_height="@dimen/icon_image"
+                android:layout_alignTop="@+id/tv_cafe_info_address"
+                android:src="@drawable/ic_place"/>
+            <TextView
+                android:id="@+id/tv_cafe_info_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/icon_image"
+                android:layout_marginLeft="@dimen/icon_image"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:layout_below="@+id/vp_image"
+                android:textSize="@dimen/text_size_large"
+                android:text="Addresssss" />
+            <ImageView
+                android:layout_width="@dimen/icon_image"
+                android:layout_height="@dimen/icon_image"
+                android:layout_alignTop="@+id/tv_cafe_info_phone"
+                android:src="@drawable/ic_settings_phone"/>
+            <TextView
+                android:id="@+id/tv_cafe_info_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:layout_marginStart="@dimen/icon_image"
+                android:layout_marginLeft="@dimen/icon_image"
+                android:layout_below="@+id/tv_cafe_info_address"
+                android:textSize="@dimen/text_size_large"
+                android:autoLink="phone"
+                android:text="063 12 14 169"/>
+            <ImageView
+                android:layout_width="@dimen/icon_image"
+                android:layout_height="@dimen/icon_image"
+                android:layout_alignTop="@+id/tv_cafe_info_link"
+                android:src="@drawable/ic_link"/>
+            <TextView
+                android:id="@+id/tv_cafe_info_link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:layout_marginStart="@dimen/icon_image"
+                android:layout_marginLeft="@dimen/icon_image"
+                android:layout_below="@+id/tv_cafe_info_phone"
+                android:textSize="@dimen/text_size_large"
+                android:autoLink="web"
+                android:text="https://google.com"/>
+            <LinearLayout
+                android:id="@+id/ll_review_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/tv_cafe_info_link"/>
+
+        </RelativeLayout>
+    </ScrollView>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tb_cafe_details_activity"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/button_height_super_tall"
-        android:layout_alignParentBottom="true"
-        android:gravity="center_vertical"
-        android:textSize="@dimen/text_size_large_plus"
-        android:textColor="@color/black"
-        android:text="Cafe name bla bla"/>
+        android:layout_height="?attr/actionBarSize"
+        style="@style/AppTheme" />
 </RelativeLayout>
+

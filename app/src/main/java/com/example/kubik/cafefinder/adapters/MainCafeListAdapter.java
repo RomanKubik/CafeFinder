@@ -26,6 +26,8 @@ import butterknife.ButterKnife;
 
 public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapter.ViewHolder> {
 
+    private static final float DEFAULT_MINIMUM_CAFE_RATING = 1;
+
     private List<BaseCafeInfo> mCafeList;
     private Context mContext;
     private Location mLocation;
@@ -73,13 +75,22 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
                     .load(url)
                     .fit().centerCrop()
                     .into(holder.imgCafeCard);
+        } else if (cafe.getPoster() != null) {
+            holder.imgCafeCard.setImageBitmap(cafe.getPoster());
+            holder.imgCafeCard.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             Picasso.with(mContext)
                     .load(R.drawable.logo_cafe)
                     .into(holder.imgCafeCard);
         }
+
         holder.tvCafeCardName.setText(cafe.getName());
-        holder.tvCafeCardRate.setText(String.valueOf(cafe.getRating()));
+        if (cafe.getRating() >= DEFAULT_MINIMUM_CAFE_RATING) {
+            holder.tvCafeCardRate.setText(String.format("%.1f", cafe.getRating()));
+        } else {
+            holder.tvCafeCardRate.setText(String.valueOf(DEFAULT_MINIMUM_CAFE_RATING));
+        }
+
         holder.tvCafeCardAddress.setText(cafe.getVicinity());
         //Get distance
         String distance = String.valueOf((int) location.distanceTo(mLocation)) + mContext.getString(R.string.meters);
