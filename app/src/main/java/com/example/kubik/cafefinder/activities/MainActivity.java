@@ -17,6 +17,7 @@ import com.example.kubik.cafefinder.R;
 import com.example.kubik.cafefinder.adapters.DistanceSpinnerAdapter;
 import com.example.kubik.cafefinder.adapters.MainCafeListAdapter;
 import com.example.kubik.cafefinder.helpers.ApiUrlBuilder;
+import com.example.kubik.cafefinder.helpers.EndlessRecyclerViewScrollListener;
 import com.example.kubik.cafefinder.models.BaseCafeInfo;
 import com.example.kubik.cafefinder.models.CafeList;
 import com.example.kubik.cafefinder.requests.ApiClient;
@@ -46,6 +47,11 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
 
     private CafeList mCafeList = new CafeList();
 
+    private LinearLayoutManager mLayoutManager;
+    List<BaseCafeInfo> mCafes = new ArrayList<>();
+    MainCafeListAdapter mCafeListAdapter;
+    private EndlessRecyclerViewScrollListener mScrollListener;
+
     @BindView(R.id.rv_main_cafe_list)
     RecyclerView mRecyclerView;
     @BindView(R.id.tb_main_activity)
@@ -57,6 +63,9 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
 
     @BindString(R.string.search_options)
     String mSearchOptions;
+    @BindString(R.string.rankby_options)
+    String mRankByOptions;
+
 
     @BindDrawable(R.drawable.heart)
     Drawable mNormal;
@@ -70,7 +79,16 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.main_activity);
         super.onCreate(savedInstanceState);
-
+        mLayoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false);
+        mScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadNextPage();
+            }
+        };
+        mCafeListAdapter = new MainCafeListAdapter(mCafes, this, sLocation);
+        mRecyclerView.addOnScrollListener(mScrollListener);
         setToolbar();
     }
 
@@ -131,12 +149,13 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
     }
 
     private void loadCafeList() {
+        mCafes.clear();
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
         String location = sLocation.getLatitude() + "," + sLocation.getLongitude();
-        Call<CafeList> call = apiService.getNearbyPlaces(location, mSearchRadius, mSearchOptions,
-                ApiUrlBuilder.getApiKey());
+        Call<CafeList> call = apiService.getNearbyPlaces(location, mSearchRadius, mRankByOptions
+                , mSearchOptions, ApiUrlBuilder.getApiKey());
 
         call.enqueue(new Callback<CafeList>() {
             @Override
@@ -152,13 +171,35 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
         });
     }
 
+    private void loadNextPage() {
+        if (mCafeList.getNextPageToken() != null) {
+            ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+            String location = sLocation.getLatitude() + "," + sLocation.getLongitude();
+
+            Call<CafeList> call = apiService.getNextPagePlaces(location, mSearchRadius
+                    , mCafeList.getNextPageToken(), ApiUrlBuilder.getApiKey());
+
+            call.enqueue(new Callback<CafeList>() {
+                @Override
+                public void onResponse(Call<CafeList> call, Response<CafeList> response) {
+                    mCafeList = response.body();
+                    showList();
+                }
+
+                @Override
+                public void onFailure(Call<CafeList> call, Throwable t) {
+
+                }
+            });
+
+        }
+    }
+
     private void showList() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false);
-        List<BaseCafeInfo> cafes = mCafeList.getResults();
-        MainCafeListAdapter mCafeListAdapter = new MainCafeListAdapter(cafes, this, sLocation);
+        mCafes.addAll(mCafeList.getResults());
+        mCafeListAdapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(mCafeListAdapter);
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mCafeListAdapter.setOnItemClickListener(new MainCafeListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -189,6 +230,7 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
                     mImgFavourite.setImageDrawable(mNormal);
                     loadCafeList();
                 } else {
+                    mCafes.clear();
                     mIsFavouriteList = true;
                     mImgFavourite.setImageDrawable(mFavourite);
                     mCafeList.setResults(sDbHelper.getFavouriteCafeList(sProfile));

@@ -25,6 +25,7 @@
     <string name="meters">m</string>
     <string name="search_options">cafe|restaurant</string>
     <string name="radius">Radius:</string>
+    <string name="rankby_options">prominence</string>
 
     <!--CafeDetails-->
     <string name="phone_number_error">No phone number</string>
