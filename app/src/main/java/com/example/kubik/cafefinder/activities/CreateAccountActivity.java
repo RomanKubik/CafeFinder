@@ -61,8 +61,8 @@ public class CreateAccountActivity extends BaseCafeActivity {
 
     private void setToolbar() {
         setSupportActionBar(mToolbar);
-        mToolbar.setTitle(R.string.create_account_title);
         if (mToolbar != null) {
+            getSupportActionBar().setTitle(R.string.create_account_title);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
