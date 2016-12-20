@@ -30,6 +30,7 @@
     <!--CafeDetails-->
     <string name="phone_number_error">No phone number</string>
     <string name="link_error">No website</string>
+
     <!--Distance options in main activity-->
     <string-array name="spinner_items">
         <item>250m</item>
@@ -37,5 +38,12 @@
         <item>1000m</item>
         <item>2000m</item>
     </string-array>
+
+    <!--Picture choose options-->
+    <string-array name="picture_choose">
+        <item>Take a picture</item>
+        <item>Choose from Gallery</item>
+    </string-array>
+    <string name="picture_title">Photo</string>
 
 </resources>
