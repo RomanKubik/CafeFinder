@@ -51,6 +51,11 @@ public class MainCafeListAdapter extends RecyclerView.Adapter<MainCafeListAdapte
         this.mLocation = location;
     }
 
+    public void addCafesToList(List<BaseCafeInfo> cafeList) {
+        this.mCafeList.addAll(cafeList);
+        this.notifyDataSetChanged();
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();

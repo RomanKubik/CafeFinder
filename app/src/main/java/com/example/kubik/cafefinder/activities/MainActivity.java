@@ -48,8 +48,8 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
     private CafeList mCafeList = new CafeList();
 
     private LinearLayoutManager mLayoutManager;
-    List<BaseCafeInfo> mCafes = new ArrayList<>();
-    MainCafeListAdapter mCafeListAdapter;
+    private List<BaseCafeInfo> mCafes = new ArrayList<>();
+    private MainCafeListAdapter mCafeListAdapter;
     private EndlessRecyclerViewScrollListener mScrollListener;
 
     @BindView(R.id.rv_main_cafe_list)
@@ -79,6 +79,21 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.main_activity);
         super.onCreate(savedInstanceState);
+        setRecyclerView();
+        setToolbar();
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "onStart");
+        if (mIsFavouriteList) {
+            mCafeList.setResults(sDbHelper.getFavouriteCafeList(sProfile));
+            showList();
+        }
+        super.onStart();
+    }
+
+    private void setRecyclerView() {
         mLayoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         mScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
@@ -89,17 +104,20 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
         };
         mCafeListAdapter = new MainCafeListAdapter(mCafes, this, sLocation);
         mRecyclerView.addOnScrollListener(mScrollListener);
-        setToolbar();
-    }
-
-       @Override
-    protected void onStart() {
-        Log.d(TAG, "onStart");
-        if (mIsFavouriteList) {
-            mCafeList.setResults(sDbHelper.getFavouriteCafeList(sProfile));
-            showList();
-        }
-        super.onStart();
+        mRecyclerView.setAdapter(mCafeListAdapter);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mCafeListAdapter.setOnItemClickListener(new MainCafeListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                //Start new activity with selected cafe details
+                BaseCafeInfo cafe = mCafes.get(position);
+                String placeId = cafe.getPlaceId();
+                Intent intent = new Intent(getApplicationContext(), CafeDetailsActivity.class);
+                intent.putExtra(EXTRA_PLACE_ID, placeId);
+                startActivity(intent);
+                Log.d(TAG, String.valueOf(position));
+            }
+        });
     }
 
     private void setToolbar() {
@@ -197,21 +215,8 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
 
     private void showList() {
         mCafes.addAll(mCafeList.getResults());
+        //mCafeListAdapter.addCafesToList(mCafeList.getResults());
         mCafeListAdapter.notifyDataSetChanged();
-        mRecyclerView.setAdapter(mCafeListAdapter);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mCafeListAdapter.setOnItemClickListener(new MainCafeListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                //Start new activity with selected cafe details
-                BaseCafeInfo cafe = mCafeList.getResults().get(position);
-                String placeId = cafe.getPlaceId();
-                Intent intent = new Intent(getApplicationContext(), CafeDetailsActivity.class);
-                intent.putExtra(EXTRA_PLACE_ID, placeId);
-                startActivity(intent);
-                Log.d(TAG, String.valueOf(position));
-            }
-        });
     }
 
     @Override
