@@ -6,10 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
+import android.os.Build;
 
 import java.io.ByteArrayOutputStream;
 
 /**
+ * Helps convert images
  * Created by Kubik on 12/9/16.
  */
 
@@ -33,15 +35,20 @@ public final class ImageConverter {
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
         Bitmap bitmap;
-        if (drawable instanceof VectorDrawable) {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (drawable instanceof VectorDrawable) {
+                bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                        drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bitmap);
+                drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                drawable.draw(canvas);
+            } else {
+                bitmap = ((BitmapDrawable) drawable).getBitmap();
+            }
         } else {
             bitmap = ((BitmapDrawable) drawable).getBitmap();
         }
+
         return bitmap;
     }
 }
