@@ -61,14 +61,14 @@ import retrofit2.Response;
  * Created by Kubik on 11/3/16.
  */
 
-public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyCallback, View.OnClickListener {
+public class CafeDetailsActivity extends BaseDrawerCafeActivity implements OnMapReadyCallback,
+                                                                View.OnClickListener {
 
     private static final int DEFAULT_CAMERA_PADDING = 250;
 
     private static final float DEFAULT_MINIMUM_CAFE_RATING = 1;
 
     private ScrollView mScrollView;
-    private Toolbar mToolbar;
     private TextView mTvCafeName;
     private WorkaroundMapFragment mMap;
     private ViewPager mImagePager;
@@ -108,6 +108,20 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
         getExtras();
 
+        if (sDbHelper.isFavouritePlace(sProfile, mPlaceId)) {
+            mImgLike.setImageDrawable(mFavouriteHeart);
+            mCafeDetails = sDbHelper.getPlaceInfo(sProfile, mPlaceId);
+            mPhotoList = sDbHelper.getImages(sProfile, mPlaceId);
+            mReviewList = sDbHelper.getReviews(sProfile, mPlaceId);
+            showAll();
+            Log.d("MyTag", "Loaded from cache");
+        } else {
+            mImgLike.setImageDrawable(mNotFavouriteHeart);
+            loadCafeDetails();
+            loadPhotoList();
+            loadReviews();
+            Log.d("MyTag", "Loaded from internet");
+        }
     }
 
     private void initializeViews() {
@@ -126,11 +140,11 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
         mTvCafeName = (TextView) findViewById(R.id.tv_cafe_info_name);
 
-        mToolbar = (Toolbar) findViewById(R.id.tb_cafe_details_activity);
-        setSupportActionBar(mToolbar);
+        initToolbar(R.id.tb_cafe_details_activity);
+
         if (getSupportActionBar() != null) {
+            mDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
 
@@ -267,20 +281,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (sDbHelper.isFavouritePlace(sProfile, mPlaceId)) {
-            mImgLike.setImageDrawable(mFavouriteHeart);
-            mCafeDetails = sDbHelper.getPlaceInfo(sProfile, mPlaceId);
-            mPhotoList = sDbHelper.getImages(sProfile, mPlaceId);
-            mReviewList = sDbHelper.getReviews(sProfile, mPlaceId);
-            showAll();
-            Log.d("MyTag", "Loaded from cache");
-        } else {
-            mImgLike.setImageDrawable(mNotFavouriteHeart);
-            loadCafeDetails();
-            loadPhotoList();
-            loadReviews();
-            Log.d("MyTag", "Loaded from internet");
-        }
+
     }
 
     @Override
