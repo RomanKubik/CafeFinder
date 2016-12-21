@@ -79,8 +79,6 @@ public class MainActivity extends BaseDrawerCafeActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setRecyclerView();
         setToolbar();
-        if (mIsFirstStart)
-            loadCafeList();
     }
 
     @Override
@@ -99,7 +97,8 @@ public class MainActivity extends BaseDrawerCafeActivity implements View.OnClick
         mScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadNextPage();
+                if (!mIsFavouriteList)
+                    loadNextPage();
             }
         };
         mCafeListAdapter = new MainCafeListAdapter(mCafes, this, sLocation);
@@ -122,8 +121,6 @@ public class MainActivity extends BaseDrawerCafeActivity implements View.OnClick
 
     private void setToolbar() {
         initToolbar(R.id.tb_main_activity);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        mDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mImgFavourite.setOnClickListener(this);
 

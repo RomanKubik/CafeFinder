@@ -57,8 +57,7 @@ public class BaseCafeActivity extends AppCompatActivity
         mRealm = Realm.getInstance(configuration);
 
         sDbHelper = DbHelper.getInstance(mRealm);
-        if (sGoogleApiClient == null)
-            setupGoogleApi();
+        setupGoogleApi();
         getPermissions();
 
         ButterKnife.bind(this);
