@@ -97,7 +97,7 @@ public class BaseCafeActivity extends AppCompatActivity
                 .build();
     }
 
-    private void getLocation() {
+    protected void getLocation() {
         if (sLocation != null) {
             return;
         }

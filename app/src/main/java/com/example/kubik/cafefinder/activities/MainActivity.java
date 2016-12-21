@@ -75,6 +75,8 @@ public class MainActivity extends BaseDrawerCafeActivity implements View.OnClick
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if (sLocation == null)
+            super.getLocation();
         setContentView(R.layout.main_activity);
         super.onCreate(savedInstanceState);
         setRecyclerView();
@@ -169,7 +171,6 @@ public class MainActivity extends BaseDrawerCafeActivity implements View.OnClick
         mCafes.clear();
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-
         String location = sLocation.getLatitude() + "," + sLocation.getLongitude();
         Call<CafeList> call = apiService.getNearbyPlaces(location, mSearchRadius, mRankByOptions
                 , mSearchOptions, ApiUrlBuilder.getApiKey());
@@ -214,7 +215,6 @@ public class MainActivity extends BaseDrawerCafeActivity implements View.OnClick
 
     private void showList() {
         mCafes.addAll(mCafeList.getResults());
-        //mCafeListAdapter.addCafesToList(mCafeList.getResults());
         mCafeListAdapter.notifyDataSetChanged();
     }
 
