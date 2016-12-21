@@ -109,6 +109,12 @@ public class CafeDetailsActivity extends BaseDrawerCafeActivity implements OnMap
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mDrawer.deselect();
+    }
+
     private void initializeViews() {
         if (mMap == null) {
             mMap = (WorkaroundMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -127,8 +133,8 @@ public class CafeDetailsActivity extends BaseDrawerCafeActivity implements OnMap
 
         initToolbar(R.id.tb_cafe_details_activity);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            mDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         }
 
 
@@ -325,11 +331,13 @@ public class CafeDetailsActivity extends BaseDrawerCafeActivity implements OnMap
                 if (sDbHelper.isFavouritePlace(sProfile, mPlaceId)) {
                     sDbHelper.removeFavouriteCafe(sProfile, mPlaceId);
                     mImgLike.setImageDrawable(mNotFavouriteHeart);
+                    removeCafeFromFavourite();
                     Log.d("MyTag", "Removed from favourite");
                 } else {
                     sDbHelper.addFavouriteCafe(sProfile, mPlaceId, mCafeDetails, mPhotoList
                                     , mReviewList);
                     mImgLike.setImageDrawable(mFavouriteHeart);
+                    addCafeToFavourite();
                     Log.d("MyTag", "Added to favourite");
                 }
                 break;

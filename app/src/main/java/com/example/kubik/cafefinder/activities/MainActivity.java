@@ -230,19 +230,26 @@ public class MainActivity extends BaseDrawerCafeActivity implements View.OnClick
         switch (view.getId()) {
             case R.id.img_favourite_list:
                 if (mIsFavouriteList) {
-                    mIsFavouriteList = false;
-                    mImgFavourite.setImageDrawable(mNormal);
-                    loadCafeList();
+                    setNearbyListMode();
                 } else {
-                    mCafes.clear();
-                    mIsFavouriteList = true;
-                    mImgFavourite.setImageDrawable(mFavourite);
-                    mCafeList.setResults(sDbHelper.getFavouriteCafeList(sProfile));
-                    showList();
+                    setFavouriteListMode();
                 }
                 break;
         }
     }
 
+    public void setNearbyListMode() {
+        mIsFavouriteList = false;
+        mImgFavourite.setImageDrawable(mNormal);
+        loadCafeList();
+    }
+
+    public void setFavouriteListMode() {
+        mCafes.clear();
+        mIsFavouriteList = true;
+        mImgFavourite.setImageDrawable(mFavourite);
+        mCafeList.setResults(sDbHelper.getFavouriteCafeList(sProfile));
+        showList();
+    }
 
 }
