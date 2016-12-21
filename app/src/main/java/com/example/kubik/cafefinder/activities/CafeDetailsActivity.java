@@ -61,14 +61,13 @@ import retrofit2.Response;
  * Created by Kubik on 11/3/16.
  */
 
-public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyCallback, View.OnClickListener {
+public class CafeDetailsActivity extends BaseDrawerCafeActivity implements OnMapReadyCallback, View.OnClickListener {
 
     private static final int DEFAULT_CAMERA_PADDING = 250;
 
     private static final float DEFAULT_MINIMUM_CAFE_RATING = 1;
 
     private ScrollView mScrollView;
-    private Toolbar mToolbar;
     private TextView mTvCafeName;
     private WorkaroundMapFragment mMap;
     private ViewPager mImagePager;
@@ -126,8 +125,7 @@ public class CafeDetailsActivity extends BaseCafeActivity implements OnMapReadyC
 
         mTvCafeName = (TextView) findViewById(R.id.tv_cafe_info_name);
 
-        mToolbar = (Toolbar) findViewById(R.id.tb_cafe_details_activity);
-        setSupportActionBar(mToolbar);
+        initToolbar(R.id.tb_cafe_details_activity);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);

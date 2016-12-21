@@ -37,7 +37,7 @@ import retrofit2.Response;
 /**
  * Activity for main window of app.
  */
-public class MainActivity extends BaseCafeActivity implements View.OnClickListener {
+public class MainActivity extends BaseDrawerCafeActivity implements View.OnClickListener {
 
     public static final String TAG = "MainActivity";
 
@@ -54,8 +54,6 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
 
     @BindView(R.id.rv_main_cafe_list)
     RecyclerView mRecyclerView;
-    @BindView(R.id.tb_main_activity)
-    Toolbar mToolbar;
     @BindView(R.id.sp_main_activity)
     Spinner mSpinner;
     @BindView(R.id.img_favourite_list)
@@ -77,6 +75,8 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if (sLocation == null)
+            super.getLocation();
         setContentView(R.layout.main_activity);
         super.onCreate(savedInstanceState);
         setRecyclerView();
@@ -99,7 +99,8 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
         mScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadNextPage();
+                if (!mIsFavouriteList)
+                    loadNextPage();
             }
         };
         mCafeListAdapter = new MainCafeListAdapter(mCafes, this, sLocation);
@@ -121,7 +122,7 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
     }
 
     private void setToolbar() {
-        setSupportActionBar(mToolbar);
+        initToolbar(R.id.tb_main_activity);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mImgFavourite.setOnClickListener(this);
 
@@ -170,7 +171,6 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
         mCafes.clear();
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-
         String location = sLocation.getLatitude() + "," + sLocation.getLongitude();
         Call<CafeList> call = apiService.getNearbyPlaces(location, mSearchRadius, mRankByOptions
                 , mSearchOptions, ApiUrlBuilder.getApiKey());
@@ -215,7 +215,6 @@ public class MainActivity extends BaseCafeActivity implements View.OnClickListen
 
     private void showList() {
         mCafes.addAll(mCafeList.getResults());
-        //mCafeListAdapter.addCafesToList(mCafeList.getResults());
         mCafeListAdapter.notifyDataSetChanged();
     }
 

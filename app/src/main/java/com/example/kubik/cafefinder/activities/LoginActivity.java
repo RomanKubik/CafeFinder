@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.example.kubik.cafefinder.R;
+import com.example.kubik.cafefinder.helpers.ImageConverter;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -98,8 +99,10 @@ public class LoginActivity extends BaseCafeActivity implements GoogleApiClient.O
         String name = acct.getDisplayName();
         String email = acct.getEmail();
         String personId = acct.getId();
+        Bitmap photo = ImageConverter.bitmapFromURL(acct.getPhotoUrl().getPath());
         if (!sDbHelper.isGoogleProfileExist(personId)) {
             sProfile = sDbHelper.createProfile(name, email, personId);
+            sDbHelper.updateProfilePhoto(sProfile, photo);
         }
         sProfile = sDbHelper.loginProfile(email, personId);
         startMainActivity();

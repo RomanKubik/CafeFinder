@@ -66,7 +66,6 @@ public class BaseCafeActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRealm.close();
     }
 
     @Override
@@ -98,7 +97,7 @@ public class BaseCafeActivity extends AppCompatActivity
                 .build();
     }
 
-    private void getLocation() {
+    protected void getLocation() {
         if (sLocation != null) {
             return;
         }
