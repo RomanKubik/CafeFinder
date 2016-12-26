@@ -80,6 +80,8 @@ public class CafeDetailsActivity extends BaseDrawerCafeActivity implements OnMap
 
     private ImagePagerAdapter mImagePagerAdapter;
 
+    private int mScreenHeightPx;
+
     @BindDimen(R.dimen.button_height_super_tall)
     int mCafeNameHeightPx;
     @BindDrawable(R.drawable.heart)
@@ -130,6 +132,7 @@ public class CafeDetailsActivity extends BaseDrawerCafeActivity implements OnMap
         }
 
         mTvCafeName = (TextView) findViewById(R.id.tv_cafe_info_name);
+        mTvCafeName.setOnClickListener(this);
 
         initToolbar(R.id.tb_cafe_details_activity);
         if (getSupportActionBar() != null) {
@@ -224,7 +227,7 @@ public class CafeDetailsActivity extends BaseDrawerCafeActivity implements OnMap
     }
 
     private void showBaseInformation() {
-        int mScreenHeightPx = getScreenHeightPx();
+        mScreenHeightPx = getScreenHeightPx();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0);
         params.height = mScreenHeightPx - mCafeNameHeightPx;
@@ -340,6 +343,10 @@ public class CafeDetailsActivity extends BaseDrawerCafeActivity implements OnMap
                     addCafeToFavourite();
                     Log.d("MyTag", "Added to favourite");
                 }
+                break;
+            case R.id.tv_cafe_info_name:
+                mScrollView.smoothScrollTo(0, mScreenHeightPx - mCafeNameHeightPx);
+
                 break;
         }
     }
