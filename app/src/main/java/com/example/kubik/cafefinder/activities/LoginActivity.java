@@ -59,8 +59,8 @@ public class LoginActivity extends BaseCafeActivity implements GoogleApiClient.O
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setContentView(R.layout.login_activity);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.login_activity);
         Fabric.with(this, new Crashlytics());
 
         mBtnGoogleSignin.setSize(SignInButton.SIZE_WIDE);

@@ -51,7 +51,7 @@ public class BaseDrawerCafeActivity extends BaseCafeActivity {
     protected void initToolbar(int toolbarId) {
         mToolbar = (Toolbar) findViewById(toolbarId);
         setSupportActionBar(mToolbar);
-        initDrawer();
+//        initDrawer();
     }
 
     private void initDrawer() {

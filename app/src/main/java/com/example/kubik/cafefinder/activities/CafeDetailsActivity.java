@@ -47,6 +47,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindDimen;
@@ -197,7 +198,7 @@ public class CafeDetailsActivity extends BaseDrawerCafeActivity implements OnMap
             @Override
             public void onResponse(Call<CafeInfo> call, Response<CafeInfo> response) {
                 mCafeInfo = response.body();
-                mReviewList = mCafeInfo.getResult().getReviews();
+                mReviewList = mCafeInfo.getResult() != null ? mCafeInfo.getResult().getReviews() : Collections.<CafeReview>emptyList();
                 showReviews();
             }
 

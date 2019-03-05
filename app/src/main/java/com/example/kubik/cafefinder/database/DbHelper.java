@@ -130,7 +130,9 @@ public final class DbHelper {
             Geometry geometry = new Geometry();
             geometry.setLocation(location);
             baseCafeInfo.setGeometry(geometry);
-            baseCafeInfo.setPoster(ImageConverter.byteToBitmapConverter(cafeInfo.getImages().first().getImage()));
+            if (cafeInfo.getImages() != null && !cafeInfo.getImages().isEmpty()) {
+                baseCafeInfo.setPoster(ImageConverter.byteToBitmapConverter(cafeInfo.getImages().first().getImage()));
+            }
             baseCafeInfo.setVicinity(cafeInfo.getAddress());
             cafeList.add(baseCafeInfo);
         }

@@ -59,7 +59,11 @@ public class BaseCafeActivity extends AppCompatActivity
         sDbHelper = DbHelper.getInstance(mRealm);
         setupGoogleApi();
         getPermissions();
+    }
 
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
         ButterKnife.bind(this);
     }
 

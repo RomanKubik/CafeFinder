@@ -77,8 +77,8 @@ public class MainActivity extends BaseDrawerCafeActivity implements View.OnClick
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if (sLocation == null)
             super.getLocation();
-        setContentView(R.layout.main_activity);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main_activity);
         setRecyclerView();
         setToolbar();
     }

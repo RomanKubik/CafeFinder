@@ -60,8 +60,8 @@ public class CreateAccountActivity extends BaseCafeActivity implements ChoosePic
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setContentView(R.layout.create_account_activity);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.create_account_activity);
 
         setToolbar();
     }
