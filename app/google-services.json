@@ -8,7 +8,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:96781850295:android:bfcdad0409140c92",
         "android_client_info": {
-          "package_name": "com.example.kubik.cafefinder"
+          "package_name": "com.example.pavlyk.cafefinder"
         }
       },
       "oauth_client": [
@@ -16,7 +16,7 @@
           "client_id": "96781850295-fe4hfkdon4iffvn9gj0cs920sgkjetae.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.kubik.cafefinder",
+            "package_name": "com.example.pavlyk.cafefinder",
             "certificate_hash": "0024AF7633277868FFDF687FD366D51DF43BA0AA"
           }
         },

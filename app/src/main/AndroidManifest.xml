@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.kubik.cafefinder">
+    package="com.example.pavlyk.cafefinder">
 
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -36,7 +36,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
 
-        <activity android:name=".activities.LoginActivity">
+        <activity android:name="com.example.pavlyk.cafefinder.activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -44,15 +44,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.CreateAccountActivity">
+        <activity android:name="com.example.pavlyk.cafefinder.activities.CreateAccountActivity">
 
         </activity>
 
-        <activity android:name=".activities.MainActivity">
+        <activity android:name="com.example.pavlyk.cafefinder.activities.MainActivity">
             
         </activity>
 
-        <activity android:name=".activities.CafeDetailsActivity">
+        <activity android:name="com.example.pavlyk.cafefinder.activities.CafeDetailsActivity">
 
         </activity>
         <meta-data
